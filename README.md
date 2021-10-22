@@ -7,7 +7,7 @@ _It is a very (very) simplified version of tools like mRemoteNG or MobaXterm._
 ## License
 
 Portal is released under the terms of the MIT license.
-See [LICENSE](LICENSE) for more information or see <https://opensource.org/licenses/MIT>.
+See [LICENSE](LICENSE) or <https://opensource.org/licenses/MIT>.
 
 ---
 
@@ -99,7 +99,7 @@ Extract it in `C:\Users\<your_user>\Documents\PowerShell\Modules\`.
     Get-Command -Module Portal
     ```
 
-The fastest way to use the module is to import it from your [PowerShell profile](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.1).
+The fastest way to use the module is to import it from your [PowerShell profile](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles).
 Then, each time you will open your PowerShell console, the module will be automatically imported.
 
 We also recommend that you create aliases for the most commonly used commands.
@@ -198,7 +198,7 @@ Open-Portal Perseverance
 
 Read help files in [docs/cmdlet-help](docs/cmdlet-help).
 
-You can also use [the `Get-Help` Cmdlet](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-help?view=powershell-7.1) to obtain more information about a command.
+You can also use [the `Get-Help` Cmdlet](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-help) to obtain more information about a command.
 
 ---
 
