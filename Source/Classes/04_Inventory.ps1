@@ -24,7 +24,7 @@ class Inventory {
             )
             if ($Value) { return $Value }
         }
-        return Join-Path -Path $env:USERPROFILE -ChildPath "Portal.json"
+        return Join-Path -Path $HOME -ChildPath "Portal.json"
     }
 
     [void] ReadFile() {
