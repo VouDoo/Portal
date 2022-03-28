@@ -52,7 +52,9 @@ function Get-Portal {
 
     begin {
         $ErrorActionPreference = "Stop"
+    }
 
+    process {
         try {
             $Inventory = Import-Inventory
         }
@@ -61,9 +63,7 @@ function Get-Portal {
                 "Error import inventory: {0}" -f $_.Exception.Message
             )
         }
-    }
 
-    process {
         $Connections = @()
         foreach ($c in $Inventory.Connections) {
             $Connections += [PSCustomObject] @{
@@ -80,9 +80,7 @@ function Get-Portal {
                 Description   = $c.Description
             }
         }
-    }
 
-    end {
         $Connections
         | Where-Object -Property Name -Like $Name
         | Where-Object -Property Hostname -Like $Hostname

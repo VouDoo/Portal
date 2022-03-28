@@ -87,7 +87,9 @@ function Add-Portal {
 
     begin {
         $ErrorActionPreference = "Stop"
+    }
 
+    process {
         try {
             $Inventory = Import-Inventory
         }
@@ -96,9 +98,7 @@ function Add-Portal {
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
         }
-    }
 
-    process {
         try {
             $Connection = New-Object -TypeName Connection -ArgumentList @(
                 $Name,
