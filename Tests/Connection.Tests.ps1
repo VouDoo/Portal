@@ -76,7 +76,7 @@ Describe "Get-Portal" {
         (Get-Portal).count | Should -BeExactly 4
     }
     It "Gets Connections filtered by name" {
-        (Get-Portal -Name "ConnectionTest*")[0].Name | Should -BeExactly "ConnectionTest4"
+        (Get-Portal -name "ConnectionTest*")[0].Name | Should -BeExactly "ConnectionTest4"
     }
     It "Gets Connections filtered by client name" {
         (Get-Portal -Client "ClientTest")[0].Name | Should -BeExactly "TestConnection3"
@@ -85,23 +85,23 @@ Describe "Get-Portal" {
         (Get-Portal -Hostname "conn2*")[0].Name | Should -BeExactly "TestConnection2"
     }
     It "Gets Connections filtered by name and client name" {
-        (Get-Portal -Name "*tion2" -Client "TestClient")[0].Name | Should -BeExactly "TestConnection2"
+        (Get-Portal -name "*tion2" -Client "TestClient")[0].Name | Should -BeExactly "TestConnection2"
     }
     It "Gets Connections filtered by name and hostname name" {
-        (Get-Portal -Name "*tion3" -Hostname "*.test")[0].Name | Should -BeExactly "TestConnection3"
+        (Get-Portal -name "*tion3" -Hostname "*.test")[0].Name | Should -BeExactly "TestConnection3"
     }
     It "Gets Connections filtered by name and client name that do not exist" {
-        (Get-Portal -Name "*Test3" -Client "TestClient") | Should -BeNullOrEmpty
+        (Get-Portal -name "*Test3" -Client "TestClient") | Should -BeNullOrEmpty
     }
     It "Gets Connections filtered by name and hostname name that do not exist" {
-        (Get-Portal -Name "*Test2" -Hostname "do.not.exist") | Should -BeNullOrEmpty
+        (Get-Portal -name "*Test2" -Hostname "do.not.exist") | Should -BeNullOrEmpty
     }
 }
 Describe "Remove-Portal" {
     It "Removes an existing connection" {
-        Remove-Portal -Name "TestConnection1" | Should -BeNullOrEmpty
+        Remove-Portal -name "TestConnection1" | Should -BeNullOrEmpty
     }
     It "Removes a connection that does not exist, and fails" {
-        { Remove-Portal -Name "TestConnection0" } | Should -Throw
+        { Remove-Portal -name "TestConnection0" } | Should -Throw
     }
 }
