@@ -121,6 +121,7 @@ function Add-Portal {
             )
         ) {
             $Inventory.AddConnection($Connection)
+
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (

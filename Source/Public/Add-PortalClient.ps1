@@ -130,6 +130,7 @@ function Add-PortalClient {
             )
         ) {
             $Inventory.AddClient($Client)
+
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (
