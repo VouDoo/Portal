@@ -100,6 +100,15 @@ function Add-PortalClient {
         }
 
         try {
+            [Client]::ValidateTokenizedArgs($Arguments)
+        }
+        catch {
+            Write-Error -Message (
+                $_.Exception.Message
+            )
+        }
+
+        try {
             $Client = New-Object -TypeName Client -ArgumentList @(
                 $Name,
                 $Executable,
