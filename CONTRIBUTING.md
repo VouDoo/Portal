@@ -13,8 +13,8 @@
 1. Clone the repository to your local disk
 
    ```sh
-   git clone https://github.com/VouDoo/MyRemoteManager
-   cd MyRemoteManager
+   git clone https://github.com/VouDoo/Portal
+   cd Portal
    ```
 
 2. Build the module
@@ -26,13 +26,13 @@
 3. Import the module
 
    ```powershell
-   Import-Module -Name .\Out\MyRemoteManager\<x.x.x>\MyRemoteManager.psd1 -Force
+   Import-Module -Name .\Out\Portal\<x.x.x>\Portal.psd1 -Force
    ```
 
 4. Get the available commands
 
    ```powershell
-   Get-Command -Module MyRemoteManager
+   Get-Command -Module Portal
    ```
 
 ## Other useful commands
