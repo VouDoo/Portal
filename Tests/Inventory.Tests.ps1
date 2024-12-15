@@ -2,7 +2,7 @@ BeforeAll {
     $Module = Get-Item -Path $env:PESTER_FILE_TO_TEST
     Import-Module -Name $Module.FullName -Force
 
-    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "inventory.json"
+    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "portal/inventory.json"
 }
 Describe "New-PortalInventory" {
     It "Creates a new inventory file" {

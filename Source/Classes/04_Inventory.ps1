@@ -120,9 +120,12 @@ class Inventory {
 
         $Json = ConvertTo-Json -InputObject $Items -Depth 3
 
-        $BackupPath = "{0}.backup" -f $this.Path
         if (Test-Path -Path $this.Path -PathType Leaf) {
+            $BackupPath = "{0}.backup" -f $this.Path
             Copy-Item -Path $this.Path -Destination $BackupPath -Force
+        }
+        else {
+            New-Item -Path $this.Path -ItemType File -Force | Out-Null
         }
 
         Set-Content -Path $this.Path -Value $Json -Encoding ([Inventory]::Encoding) -Force
