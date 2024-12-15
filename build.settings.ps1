@@ -1,7 +1,7 @@
 $ProjectRoot = $PSScriptRoot
 
 $ModuleName = "Portal"
-$ModuleVersion = "0.3.3"
+$ModuleVersion = "0.4.0"
 
 $Source = Join-Path -Path $ProjectRoot -ChildPath "Source"
 $Tests = Join-Path -Path $ProjectRoot -ChildPath "Tests"
