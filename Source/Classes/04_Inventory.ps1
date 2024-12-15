@@ -1,8 +1,8 @@
 class Inventory {
     # Title for the inventory file
-    [string] $Title = "MyRemoteManager inventory"
+    [string] $Title = "Portal inventory"
     # description for the inventory file
-    [string] $Description = "MyRemoteManager inventory file where the connections and clients are stored"
+    [string] $Description = "Portal inventory file where the connections and clients are stored"
     # Version of the inventory file
     [string] $Version = "0.1.0"
     # Path to the inventory file
@@ -14,7 +14,7 @@ class Inventory {
     # Encoding for inventory file
     static [string] $Encoding = "utf-8"
     # Name of the environement variable to use a custom path to the inventory file
-    static [string] $EnvVariable = "MY_RM_INVENTORY"
+    static [string] $EnvVariable = "PORTAL_INVENTORY"
 
     static [string] GetPath() {
         foreach ($Target in @("Process", "User", "Machine")) {
@@ -24,7 +24,7 @@ class Inventory {
             )
             if ($Value) { return $Value }
         }
-        return Join-Path -Path $env:USERPROFILE -ChildPath "MyRemoteManager.json"
+        return Join-Path -Path $env:APPDATA -ChildPath "Portal/inventory.json"
     }
 
     [void] ReadFile() {
@@ -52,6 +52,9 @@ class Inventory {
             )
         }
 
+        # Re-initialize Clients array
+        $this.Clients = @()
+
         # Add every Client to inventory object
         foreach ($c in $Items.Clients) {
             $this.Clients += New-Object -TypeName Client -ArgumentList @(
@@ -71,6 +74,9 @@ class Inventory {
                 )
             )
         }
+
+        # Re-initialize Connections array
+        $this.Connections = @()
 
         # Add every Connection to inventory object
         foreach ($c in $Items.Connections) {
@@ -186,5 +192,47 @@ class Inventory {
 
     [void] RemoveConnection([string] $Name) {
         $this.Connections = $this.Connections | Where-Object -Property Name -NE $Name
+    }
+
+    [void] RenameClient([string] $Name, [string] $NewName) {
+        if ($Name -eq $NewName) {
+            throw "The two names are similar."
+        }
+        elseif (-not $this.ClientExists($Name)) {
+            throw "No Client `"{0}`" to rename." -f $Name
+        }
+        elseif ($this.ClientExists($NewName)) {
+            throw "Cannot rename Client `"{0}`" to `"{1}`" as this name is already used." -f $Name, $NewName
+        }
+
+        for ($i = 0; $i -lt $this.Clients.count; $i++) {
+            if ($this.Clients[$i].Name -eq $Name) {
+                $this.Clients[$i].Name = $NewName
+            }
+        }
+
+        for ($i = 0; $i -lt $this.Connections.count; $i++) {
+            if ($this.Connections[$i].DefaultClient -eq $Name) {
+                $this.Connections[$i].DefaultClient = $NewName
+            }
+        }
+    }
+
+    [void] RenameConnection([string] $Name, [string] $NewName) {
+        if ($Name -eq $NewName) {
+            throw "The two names are similar."
+        }
+        elseif (-not $this.ConnectionExists($Name)) {
+            throw "No Connection `"{0}`" to rename." -f $Name
+        }
+        elseif ($this.ConnectionExists($NewName)) {
+            throw "Cannot rename Connection `"{0}`" to `"{1}`" as this name is already used." -f $Name, $NewName
+        }
+
+        for ($i = 0; $i -lt $this.Connections.count; $i++) {
+            if ($this.Connections[$i].Name -eq $Name) {
+                $this.Connections[$i].Name = $NewName
+            }
+        }
     }
 }

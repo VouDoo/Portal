@@ -1,9 +1,32 @@
+<!-- markdownlint-disable-file MD024 -->
 # Changelog
 
-All notable changes to MyRemoteManager is documented in this file.
+All notable changes to Portal is documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## Changed
+
+- Rebrand to "Portal"
+  - Cmdlet `Add-MyRMConnection` renamed to `Add-Portal`
+  - Cmdlet `Add-MyRMClient` renamed to `Add-PortalClient`
+  - Cmdlet `Get-MyRMConnection` renamed to `Get-Portal`
+  - Cmdlet `Get-MyRMClient` renamed to `Get-PortalClient`
+  - Cmdlet `Get-MyRMInventoryInfo` renamed to `Get-PortalInventory`
+  - Cmdlet `New-MyRMInventory` renamed to `New-PortalInventory`
+  - Cmdlet `Invoke-MyRMConnection` renamed to `Open-Portal`
+  - Cmdlet `Remove-MyRMConnection` renamed to `Remove-Portal`
+  - Cmdlet `Remove-MyRMClient` renamed to `Remove-PortalClient`
+  - Cmdlet `Set-MyRMInventoryPath` renamed to `Set-PortalInventory`
+  - Cmdlet `Test-MyRMConnection` renamed to `Test-Portal`
+
+### Added
+
+- `Rename-Portal` renames a connection entry
+- `Rename-PortalClient` renames a client entry
 
 ## [0.3.3]
 

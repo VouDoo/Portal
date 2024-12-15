@@ -1,35 +1,35 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# Test-MyRMConnection
+# Test-Portal
 
 ## SYNOPSIS
-Tests MyRemoteManager connection.
+Tests Portal connection.
 
 ## SYNTAX
 
 ```
-Test-MyRMConnection [-Name] <String> [<CommonParameters>]
+Test-Portal [-Name] <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Tests MyRemoteManager connection which is defined in the inventory.
+Tests Portal connection which is defined in the inventory.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Test-MyRMConnection myconn
+Test-Portal myconn
 (status)
 ```
 
 ### EXAMPLE 2
 ```
-Test-MyRMConnection -Name myconn
+Test-Portal -Name myconn
 (status)
 ```
 
@@ -50,15 +50,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to Test-MyRMConnection.
+### None. You cannot pipe objects to Test-Portal.
 ## OUTPUTS
 
-### System.String. Test-MyRMConnection returns a string with the status of the remote host.
+### System.String. Test-Portal returns a string with the status of the remote host.
 ## NOTES
 
 ## RELATED LINKS

@@ -1,40 +1,41 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# Set-MyRMInventoryPath
+# Open-Portal
 
 ## SYNOPSIS
-Sets MyRemoteManager inventory path.
+Opens Portal connection.
 
 ## SYNTAX
 
 ```
-Set-MyRMInventoryPath [-Path] <String> [-Target <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Open-Portal [-Name] <String> [-Client <String>] [-User <String>] [-Scope <Scopes>]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Sets the specific environment variable to overwrite default path to the MyRemoteManager inventory file.
+Opens Portal connection which is defined in the inventory.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Set-MyRMInventoryPath C:\MyCustomInventory.json
+Open-Portal myconn
 ```
 
 ### EXAMPLE 2
 ```
-Set-MyRMInventoryPath -Path C:\MyCustomInventory.json
+Open-Portal -Name myconn -Client SSH -User root -Scope Console
 ```
 
 ## PARAMETERS
 
-### -Path
-Path to the inventory file.
+### -Name
+Name of the connection.
 
 ```yaml
 Type: String
@@ -48,17 +49,48 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Target
-Target scope where the environment variable will be saved.
+### -Client
+Name of the client to use to initiate the connection.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: c
 
 Required: False
 Position: Named
-Default value: User
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -User
+Name of the user to connect with.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: u
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Scope
+Scope in which the connection will be opened.
+
+```yaml
+Type: Scopes
+Parameter Sets: (All)
+Aliases: x
+Accepted values: Undefined, Console, External
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -94,12 +126,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to Set-MyRMInventoryPath.
+### None. You cannot pipe objects to Open-Portal.
 ## OUTPUTS
 
 ### System.Void. None.

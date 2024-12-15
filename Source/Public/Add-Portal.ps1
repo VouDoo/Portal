@@ -1,12 +1,12 @@
-function Add-MyRMConnection {
+function Add-Portal {
 
     <#
 
     .SYNOPSIS
-    Adds MyRemoteManager connection.
+    Adds Portal connection.
 
     .DESCRIPTION
-    Adds connection entry to the MyRemoteManager inventory file.
+    Adds connection entry to the Portal inventory file.
 
     .PARAMETER Name
     Name of the connection.
@@ -28,19 +28,19 @@ function Add-MyRMConnection {
     Short description for the connection.
 
     .INPUTS
-    None. You cannot pipe objects to Add-MyRMConnection.
+    None. You cannot pipe objects to Add-Portal.
 
     .OUTPUTS
     System.Void. None.
 
     .EXAMPLE
-    PS> Add-MyRMConnection -Name myconn -Hostname myhost -DefaultClient SSH
+    PS> Add-Portal -Name myconn -Hostname myhost -DefaultClient SSH
 
     .EXAMPLE
-    PS> Add-MyRMConnection -Name myrdpconn -Hostname myhost -DefaultClient RDP -Description "My RDP connection"
+    PS> Add-Portal -Name myrdpconn -Hostname myhost -DefaultClient RDP -Description "My RDP connection"
 
     .EXAMPLE
-    PS> Add-MyRMConnection -Name mysshconn -Hostname myhost -Port 2222 -DefaultClient SSH -DefaultUser myuser -Description "My SSH connection"
+    PS> Add-Portal -Name mysshconn -Hostname myhost -Port 2222 -DefaultClient SSH -DefaultUser myuser -Description "My SSH connection"
 
     #>
 
@@ -87,7 +87,9 @@ function Add-MyRMConnection {
 
     begin {
         $ErrorActionPreference = "Stop"
+    }
 
+    process {
         try {
             $Inventory = Import-Inventory
         }
@@ -96,9 +98,7 @@ function Add-MyRMConnection {
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
         }
-    }
 
-    process {
         try {
             $Connection = New-Object -TypeName Connection -ArgumentList @(
                 $Name,
@@ -121,6 +121,7 @@ function Add-MyRMConnection {
             )
         ) {
             $Inventory.AddConnection($Connection)
+
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (

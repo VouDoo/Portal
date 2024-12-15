@@ -2,8 +2,8 @@ BeforeAll {
     $Module = Get-Item -Path $env:PESTER_FILE_TO_TEST
     Import-Module -Name $Module.FullName -Force
 
-    $env:MY_RM_INVENTORY = Join-Path -Path $TestDrive -ChildPath "MyRemoteManager.json"
-    New-MyRMInventory -NoDefaultClients
+    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "inventory.json"
+    New-PortalInventory -NoDefaultClients
 
     @(
         @{
@@ -19,10 +19,10 @@ BeforeAll {
             DefaultPort = 5678
         }
     ) | ForEach-Object -Process {
-        Add-MyRMClient @_
+        Add-PortalClient @_
     }
 }
-Describe "Add-MyRMConnection" {
+Describe "Add-Portal" {
     It "Adds a connection" {
         $Arguments = @{
             Name          = "TestConnection1"
@@ -31,7 +31,7 @@ Describe "Add-MyRMConnection" {
             DefaultClient = "TestClient"
             Description   = "A test connection."
         }
-        Add-MyRMConnection @Arguments | Should -BeNullOrEmpty
+        Add-Portal @Arguments | Should -BeNullOrEmpty
     }
     It "Adds another connection" {
         $Arguments = @{
@@ -39,7 +39,7 @@ Describe "Add-MyRMConnection" {
             Hostname      = "conn2.test"
             DefaultClient = "TestClient"
         }
-        Add-MyRMConnection @Arguments | Should -BeNullOrEmpty
+        Add-Portal @Arguments | Should -BeNullOrEmpty
     }
     It "Adds a connection with an already used name, and fails" {
         $Arguments = @{
@@ -48,10 +48,10 @@ Describe "Add-MyRMConnection" {
             Port          = 2468
             DefaultClient = "TestClient"
         }
-        { Add-MyRMConnection @Arguments } | Should -Throw -ExpectedMessage "Cannot add Connection `"TestConnection2`" as it already exists."
+        { Add-Portal @Arguments } | Should -Throw -ExpectedMessage "Cannot add Connection `"TestConnection2`" as it already exists."
     }
 }
-Describe "Get-MyRMConnection" {
+Describe "Get-Portal" {
     BeforeAll {
         @(
             @{
@@ -66,42 +66,42 @@ Describe "Get-MyRMConnection" {
                 DefaultClient = "TestClient"
             }
         ) | ForEach-Object -Process {
-            Add-MyRMConnection @_
+            Add-Portal @_
         }
     }
     It "Gets Connections" {
-        Get-MyRMConnection | Should -BeOfType PSCustomObject
+        Get-Portal | Should -BeOfType PSCustomObject
     }
     It "Gets Connections with exact count" {
-        (Get-MyRMConnection).count | Should -BeExactly 4
+        (Get-Portal).count | Should -BeExactly 4
     }
     It "Gets Connections filtered by name" {
-        (Get-MyRMConnection -name "ConnectionTest*")[0].Name | Should -BeExactly "ConnectionTest4"
+        (Get-Portal -Name "ConnectionTest*")[0].Name | Should -BeExactly "ConnectionTest4"
     }
     It "Gets Connections filtered by client name" {
-        (Get-MyRMConnection -Client "ClientTest")[0].Name | Should -BeExactly "TestConnection3"
+        (Get-Portal -Client "ClientTest")[0].Name | Should -BeExactly "TestConnection3"
     }
     It "Gets Connections filtered by hostname" {
-        (Get-MyRMConnection -Hostname "conn2*")[0].Name | Should -BeExactly "TestConnection2"
+        (Get-Portal -Hostname "conn2*")[0].Name | Should -BeExactly "TestConnection2"
     }
     It "Gets Connections filtered by name and client name" {
-        (Get-MyRMConnection -name "*tion2" -Client "TestClient")[0].Name | Should -BeExactly "TestConnection2"
+        (Get-Portal -Name "*tion2" -Client "TestClient")[0].Name | Should -BeExactly "TestConnection2"
     }
     It "Gets Connections filtered by name and hostname name" {
-        (Get-MyRMConnection -name "*tion3" -Hostname "*.test")[0].Name | Should -BeExactly "TestConnection3"
+        (Get-Portal -Name "*tion3" -Hostname "*.test")[0].Name | Should -BeExactly "TestConnection3"
     }
     It "Gets Connections filtered by name and client name that do not exist" {
-        (Get-MyRMConnection -name "*Test3" -Client "TestClient") | Should -BeNullOrEmpty
+        (Get-Portal -Name "*Test3" -Client "TestClient") | Should -BeNullOrEmpty
     }
     It "Gets Connections filtered by name and hostname name that do not exist" {
-        (Get-MyRMConnection -name "*Test2" -Hostname "do.not.exist") | Should -BeNullOrEmpty
+        (Get-Portal -Name "*Test2" -Hostname "do.not.exist") | Should -BeNullOrEmpty
     }
 }
-Describe "Remove-MyRMConnection" {
+Describe "Remove-Portal" {
     It "Removes an existing connection" {
-        Remove-MyRMConnection -name "TestConnection1" | Should -BeNullOrEmpty
+        Remove-Portal -Name "TestConnection1" | Should -BeNullOrEmpty
     }
     It "Removes a connection that does not exist, and fails" {
-        { Remove-MyRMConnection -name "TestConnection0" } | Should -Throw
+        { Remove-Portal -Name "TestConnection0" } | Should -Throw
     }
 }

@@ -1,27 +1,27 @@
-function Remove-MyRMClient {
+function Rename-PortalClient {
 
     <#
 
     .SYNOPSIS
-    Removes MyRemoteManager client.
+    Renames Portal client.
 
     .DESCRIPTION
-    Removes client entry from the MyRemoteManager inventory file.
+    Renames client entry from the Portal inventory file.
 
     .PARAMETER Name
-    Name of the client.
+    Name of the client to rename.
+
+    .PARAMETER NewName
+    New name for the client.
 
     .INPUTS
-    None. You cannot pipe objects to Remove-MyRMClient.
+    None. You cannot pipe objects to Rename-PortalClient.
 
     .OUTPUTS
     System.Void. None.
 
     .EXAMPLE
-    PS> Remove-MyRMClient SSH
-
-    .EXAMPLE
-    PS> Remove-MyRMClient -Name SSH
+    PS> Rename-PortalClient -Name my_old_client -NewName my_new_client
 
     #>
 
@@ -31,16 +31,26 @@ function Remove-MyRMClient {
         [Parameter(
             Position = 0,
             Mandatory = $true,
-            HelpMessage = "Name of the client."
+            HelpMessage = "Name of the client to rename."
         )]
         [ValidateSet([ValidateSetClientName])]
         [ValidateClientName()]
-        [string] $Name
+        [string] $Name,
+
+        [Parameter(
+            Position = 1,
+            Mandatory = $true,
+            HelpMessage = "New name for the client."
+        )]
+        [ValidateNotNullOrEmpty()]
+        [string] $NewName
     )
 
     begin {
         $ErrorActionPreference = "Stop"
+    }
 
+    process {
         try {
             $Inventory = Import-Inventory
         }
@@ -49,20 +59,18 @@ function Remove-MyRMClient {
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
         }
-    }
 
-    process {
         if ($PSCmdlet.ShouldProcess(
                 "Inventory file {0}" -f $Inventory.Path,
-                "Remove Client {0}" -f $Name
+                ("Rename Client {0} to {1}" -f $Name, $NewName)
             )
         ) {
-            $Inventory.RemoveClient($Name)
+            $Inventory.RenameClient($Name, $NewName)
 
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (
-                    "Client `"{0}`" has been removed from the inventory." -f $Name
+                    "Client `"{0}`" has been renamed `"{1}`" in the inventory." -f $Name, $NewName
                 )
             }
             catch {

@@ -1,5 +1,5 @@
 #
-# Script module for module 'MyRemoteManager'
+# Script module for module 'Portal'
 #
 
 #Requires -Version 7.1

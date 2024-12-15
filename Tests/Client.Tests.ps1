@@ -2,10 +2,10 @@ BeforeAll {
     $Module = Get-Item -Path $env:PESTER_FILE_TO_TEST
     Import-Module -Name $Module.FullName -Force
 
-    $env:MY_RM_INVENTORY = Join-Path -Path $TestDrive -ChildPath "MyRemoteManager.json"
-    New-MyRMInventory -NoDefaultClients
+    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "inventory.json"
+    New-PortalInventory -NoDefaultClients
 }
-Describe "Add-MyRMClient" {
+Describe "Add-PortalClient" {
     It "Adds a client" {
         $Arguments = @{
             Name        = "TestClient1"
@@ -14,7 +14,7 @@ Describe "Add-MyRMClient" {
             DefaultPort = 1234
             Description = "A test client."
         }
-        Add-MyRMClient @Arguments | Should -BeNullOrEmpty
+        Add-PortalClient @Arguments | Should -BeNullOrEmpty
     }
     It "Adds another client" {
         $Arguments = @{
@@ -24,7 +24,7 @@ Describe "Add-MyRMClient" {
             DefaultPort  = 5678
             DefaultScope = "External"
         }
-        Add-MyRMClient @Arguments | Should -BeNullOrEmpty
+        Add-PortalClient @Arguments | Should -BeNullOrEmpty
     }
     It "Adds a client with an already used name, and fails" {
         $Arguments = @{
@@ -33,7 +33,7 @@ Describe "Add-MyRMClient" {
             Arguments   = "-p <port> -h <host>"
             DefaultPort = 2468
         }
-        { Add-MyRMClient @Arguments } | Should -Throw -ExpectedMessage "Cannot add Client `"TestClient2`" as it already exists."
+        { Add-PortalClient @Arguments } | Should -Throw -ExpectedMessage "Cannot add Client `"TestClient2`" as it already exists."
     }
     It "Adds a client with incorrect tokens, and fails" {
         $Arguments = @{
@@ -42,7 +42,7 @@ Describe "Add-MyRMClient" {
             Arguments   = "--port <prot> --host <host>"
             DefaultPort = 1234
         }
-        { Add-MyRMClient @Arguments } | Should -Throw -ExpectedMessage "*The argument line does not contain the following token: <port>*"
+        { Add-PortalClient @Arguments } | Should -Throw -ExpectedMessage "*The argument line does not contain the following token: <port>*"
     }
     It "Adds a client with incorrect scope, and fails" {
         $Arguments = @{
@@ -52,10 +52,10 @@ Describe "Add-MyRMClient" {
             DefaultPort  = 2546
             DefaultScope = "IncorrectScope"
         }
-        { Add-MyRMClient @Arguments } | Should -Throw -ExpectedMessage "*Unable to match the identifier name IncorrectScope to a valid enumerator name*"
+        { Add-PortalClient @Arguments } | Should -Throw -ExpectedMessage "*Unable to match the identifier name IncorrectScope to a valid enumerator name*"
     }
 }
-Describe "Get-MyRMClient" {
+Describe "Get-PortalClient" {
     BeforeAll {
         @(
             @{
@@ -71,27 +71,62 @@ Describe "Get-MyRMClient" {
                 DefaultPort = 5678
             }
         ) | ForEach-Object -Process {
-            Add-MyRMClient @_
+            Add-PortalClient @_
         }
     }
     It "Gets Clients" {
-        Get-MyRMClient | Should -BeOfType PSCustomObject
+        Get-PortalClient | Should -BeOfType PSCustomObject
     }
     It "Gets Clients with exact count" {
-        (Get-MyRMClient).count | Should -BeExactly 4
+        (Get-PortalClient).count | Should -BeExactly 4
     }
     It "Gets Clients filtered by name" {
-        (Get-MyRMClient -Name "ClientTest*")[0].Name | Should -BeExactly "ClientTest4"
+        (Get-PortalClient -Name "ClientTest*")[0].Name | Should -BeExactly "ClientTest4"
     }
     It "Gets Clients filtered by name that do not exist" {
-        (Get-MyRMClient -Name "ClientTestt*") | Should -BeNullOrEmpty
+        (Get-PortalClient -Name "ClientTestt*") | Should -BeNullOrEmpty
     }
 }
-Describe "Remove-MyRMClient" {
+Describe "Remove-PortalClient" {
     It "Removes an existing Client" {
-        Remove-MyRMClient -Name "TestClient1" | Should -BeNullOrEmpty
+        Remove-PortalClient -Name "TestClient1" | Should -BeNullOrEmpty
     }
     It "Removes a client that does not exist, and fails" {
-        { Remove-MyRMClient -Name "TestClient0" } | Should -Throw
+        { Remove-PortalClient -Name "TestClient0" } | Should -Throw
+    }
+}
+Describe "Rename-PortalClient" {
+    BeforeAll {
+        @(
+            @{
+                Name        = "BadlyNamedClient"
+                Executable  = "client.exe"
+                Arguments   = "-p <port> <host>"
+                DefaultPort = 12345
+            },
+            @{
+                Name        = "WhateverClient"
+                Executable  = "whatever.exe"
+                Arguments   = "-h <host> -p <port>"
+                DefaultPort = 666
+            }
+        ) | ForEach-Object -Process {
+            Add-PortalClient @_
+        }
+    }
+    It "Renames an existing client" {
+        Rename-PortalClient -Name "BadlyNamedClient" -NewName "NicelyNamedClient"
+        | Should -BeNullOrEmpty
+    }
+    It "Renames a client that does not exist, and fails" {
+        { Rename-PortalClient -Name "MissingClient" -NewName "NopeClient" } | Should -Throw
+    }
+    It "Renames a client with a name already used, and fails" {
+        { Rename-PortalClient -Name "NicelyNamedClient" -NewName "WhateverClient" }
+        | Should -Throw -ExpectedMessage "Cannot rename Client `"NicelyNamedClient`" to `"WhateverClient`" as this name is already used."
+    }
+    It "Uses same name for renaming, and fails" {
+        { Rename-PortalClient -Name "NicelyNamedClient" -NewName "NicelyNamedClient" }
+        | Should -Throw -ExpectedMessage "The two names are similar."
     }
 }

@@ -1,12 +1,12 @@
-function Invoke-MyRMConnection {
+function Open-Portal {
 
     <#
 
     .SYNOPSIS
-    Invokes MyRemoteManager connection.
+    Opens Portal connection.
 
     .DESCRIPTION
-    Invokes MyRemoteManager connection which is defined in the inventory.
+    Opens Portal connection which is defined in the inventory.
 
     .PARAMETER Name
     Name of the connection.
@@ -18,19 +18,19 @@ function Invoke-MyRMConnection {
     Name of the user to connect with.
 
     .PARAMETER Scope
-    Scope in which the connection will be invoked.
+    Scope in which the connection will be opened.
 
     .INPUTS
-    None. You cannot pipe objects to Invoke-MyRMConnection.
+    None. You cannot pipe objects to Open-Portal.
 
     .OUTPUTS
     System.Void. None.
 
     .EXAMPLE
-    PS> Invoke-MyRMConnection myconn
+    PS> Open-Portal myconn
 
     .EXAMPLE
-    PS> Invoke-MyRMConnection -Name myconn -Client SSH -User root -Scope Console
+    PS> Open-Portal -Name myconn -Client SSH -User root -Scope Console
 
     #>
 
@@ -61,7 +61,7 @@ function Invoke-MyRMConnection {
         [string] $User,
 
         [Parameter(
-            HelpMessage = "Scope in which the connection will be invoked."
+            HelpMessage = "Scope in which the connection will be opened."
         )]
         [Alias("x")]
         [Scopes] $Scope
@@ -69,7 +69,9 @@ function Invoke-MyRMConnection {
 
     begin {
         $ErrorActionPreference = "Stop"
+    }
 
+    process {
         try {
             $Inventory = Import-Inventory
         }
@@ -78,18 +80,16 @@ function Invoke-MyRMConnection {
                 "Error import inventory: {0}" -f $_.Exception.Message
             )
         }
-    }
 
-    process {
         $Invocation = @{}
 
         $Invocation.Connection = $Inventory.GetConnection($Name)
-        Write-Debug -Message ("Invoke connection {0}" -f $Invocation.Connection.ToString())
+        Write-Debug -Message ("Open connection {0}" -f $Invocation.Connection.ToString())
 
         $Invocation.Client = if ($Client) {
             if (-not $Inventory.ClientExists($Client)) {
                 Write-Error -Message (
-                    "Cannot invoke connection with the specified client `"{0}`" because it does not exist." -f (
+                    "Cannot open connection with the specified client `"{0}`" because it does not exist." -f (
                         $Client
                     )
                 )
@@ -99,14 +99,14 @@ function Invoke-MyRMConnection {
         else {
             if (-not $Inventory.ClientExists($Invocation.Connection.DefaultClient)) {
                 Write-Error -Message (
-                    "Cannot invoke connection with the default client `"{0}`" because it does not exist." -f (
+                    "Cannot open connection with the default client `"{0}`" because it does not exist." -f (
                         $Invocation.Connection.DefaultClient
                     )
                 )
             }
             $Inventory.GetClient($Invocation.Connection.DefaultClient)
         }
-        Write-Debug -Message ("Invoke connection with client {0}" -f $Invocation.Client.ToString())
+        Write-Debug -Message ("Open connection with client {0}" -f $Invocation.Client.ToString())
 
         $Invocation.Port = if ($Invocation.Connection.IsDefaultPort()) {
             $Invocation.Client.DefaultPort
@@ -114,7 +114,7 @@ function Invoke-MyRMConnection {
         else {
             $Invocation.Connection.Port
         }
-        Write-Debug -Message ("Invoke connection on port {0}" -f $Invocation.Port)
+        Write-Debug -Message ("Open connection on port {0}" -f $Invocation.Port)
 
         $Invocation.Executable = $Invocation.Client.Executable
         $Invocation.Arguments = if ($Invocation.Client.RequiresUser) {
@@ -133,7 +133,7 @@ function Invoke-MyRMConnection {
                 )
             }
             else {
-                Write-Error -Message "Cannot invoke connection: A user must be specified."
+                Write-Error -Message "Cannot open connection: A user must be specified."
             }
         }
         else {
@@ -143,7 +143,7 @@ function Invoke-MyRMConnection {
             )
         }
         $Invocation.Command = "{0} {1}" -f $Invocation.Executable, $Invocation.Arguments
-        Write-Debug -Message ("Invoke connection with command `"{0}`"" -f $Invocation.Command)
+        Write-Debug -Message ("Open connection with command `"{0}`"" -f $Invocation.Command)
 
         $Invocation.Scope = if ($Scope) {
             $Scope
@@ -151,7 +151,7 @@ function Invoke-MyRMConnection {
         else {
             $Invocation.Client.DefaultScope
         }
-        Write-Debug -Message ("Invoke connection in scope `"{0}`"" -f $Invocation.Scope)
+        Write-Debug -Message ("Open connection in scope `"{0}`"" -f $Invocation.Scope)
 
         if ($PSCmdlet.ShouldProcess($Invocation.Connection.ToString(), "Initiate connection")) {
             switch ($Invocation.Scope) {
@@ -162,10 +162,10 @@ function Invoke-MyRMConnection {
                     Start-Process -FilePath $Invocation.Executable -ArgumentList $Invocation.Arguments
                 }
                 ([Scopes]::Undefined) {
-                    Write-Error -Message "Cannot invoke connection: Scope is undefined."
+                    Write-Error -Message "Cannot open connection: Scope is undefined."
                 }
                 default {
-                    Write-Error -Message "Cannot invoke connection: Scope is unknown."
+                    Write-Error -Message "Cannot open connection: Scope is unknown."
                 }
             }
         }

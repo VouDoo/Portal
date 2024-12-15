@@ -1,36 +1,36 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# Get-MyRMClient
+# Get-PortalClient
 
 ## SYNOPSIS
-Gets MyRemoteManager clients.
+Gets Portal clients.
 
 ## SYNTAX
 
 ```
-Get-MyRMClient [[-Name] <String>] [<CommonParameters>]
+Get-PortalClient [[-Name] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Gets available clients from the MyRemoteManager inventory file.
+Gets available clients from the Portal inventory file.
 Clients can be filtered by their name.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Get-MyRMClient
+Get-PortalClient
 (objects)
 ```
 
 ### EXAMPLE 2
 ```
-Get-MyRMClient -Name "custom_*"
+Get-PortalClient -Name "custom_*"
 (filtered objects)
 ```
 
@@ -51,15 +51,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to Get-MyRMClient.
+### None. You cannot pipe objects to Get-PortalClient.
 ## OUTPUTS
 
-### PSCustomObject. Get-MyRMClient returns objects with details of the available clients.
+### PSCustomObject. Get-PortalClient returns objects with details of the available clients.
 ## NOTES
 
 ## RELATED LINKS

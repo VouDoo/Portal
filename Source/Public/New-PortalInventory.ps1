@@ -1,12 +1,12 @@
-function New-MyRMInventory {
+function New-PortalInventory {
 
     <#
 
     .SYNOPSIS
-    Creates MyRemoteManager inventory file.
+    Creates Portal inventory file.
 
     .DESCRIPTION
-    Creates a new inventory file where MyRemoteManager saves items.
+    Creates a new inventory file where Portal saves items.
 
     .PARAMETER NoDefaultClients
     Does not add defaults clients to the new inventory.
@@ -18,29 +18,29 @@ function New-MyRMInventory {
     Indicates that the cmdlet sends items from the interactive window down the pipeline as input to other commands.
 
     .INPUTS
-    None. You cannot pipe objects to New-MyRMInventory.
+    None. You cannot pipe objects to New-PortalInventory.
 
     .OUTPUTS
     System.Void. None.
         or if PassThru is set,
-    System.String. New-MyRMInventory returns a string with the path to the created inventory.
+    System.String. New-PortalInventory returns a string with the path to the created inventory.
 
     .EXAMPLE
-    PS> New-MyRMInventory
+    PS> New-PortalInventory
 
     .EXAMPLE
-    PS> New-MyRMInventory -NoDefaultClients
+    PS> New-PortalInventory -NoDefaultClients
 
     .EXAMPLE
-    PS> New-MyRMInventory -Force
+    PS> New-PortalInventory -Force
 
     .EXAMPLE
-    PS> New-MyRMInventory -PassThru
-    C:\Users\MyUsername\MyRemoteManager.json
+    PS> New-PortalInventory -PassThru
+    C:\Users\MyUsername\Portal.json
 
     .EXAMPLE
-    PS> New-MyRMInventory -NoDefaultClients -Force -PassThru
-    C:\Users\MyUsername\MyRemoteManager.json
+    PS> New-PortalInventory -NoDefaultClients -Force -PassThru
+    C:\Users\MyUsername\Portal.json
 
     #>
 
@@ -65,11 +65,11 @@ function New-MyRMInventory {
 
     begin {
         $ErrorActionPreference = "Stop"
-
-        $Inventory = New-Object -TypeName Inventory
     }
 
     process {
+        $Inventory = New-Object -TypeName Inventory
+
         if ((Test-Path -Path $Inventory.Path -PathType Leaf) -and -not ($Force.IsPresent)) {
             Write-Error -ErrorAction Stop -Exception (
                 [System.IO.IOException] "Inventory file already exists. Use `"-Force`" to overwrite it."
@@ -82,6 +82,7 @@ function New-MyRMInventory {
                     $Inventory.AddClient($_)
                 }
             }
+
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (
@@ -94,9 +95,7 @@ function New-MyRMInventory {
                 )
             }
         }
-    }
 
-    end {
         if ($PassThru.IsPresent) {
             Resolve-Path $Inventory.Path | Select-Object -ExpandProperty Path
         }
