@@ -1,12 +1,12 @@
-function Add-MyRMClient {
+function Add-PortalClient {
 
     <#
 
     .SYNOPSIS
-    Adds MyRemoteManager client.
+    Adds Portal client.
 
     .DESCRIPTION
-    Adds client entry to the MyRemoteManager inventory file.
+    Adds client entry to the Portal inventory file.
 
     .PARAMETER Name
     Name of the client.
@@ -17,28 +17,28 @@ function Add-MyRMClient {
     .PARAMETER Arguments
     String of Arguments to pass to the executable.
     The string should contain the required tokens.
-    Please read the documentation of MyRemoteManager.
+    Please read the documentation of Portal.
 
     .PARAMETER DefaultPort
     Network port to use if the connection has no defined port.
 
     .PARAMETER DefaultScope
-    Default scope in which a connection will be invoked.
+    Default scope in which a connection will be opened.
 
     .PARAMETER Description
     Short description for the client.
 
     .INPUTS
-    None. You cannot pipe objects to Add-MyRMClient.
+    None. You cannot pipe objects to Add-PortalClient.
 
     .OUTPUTS
     System.Void. None.
 
     .EXAMPLE
-    PS> Add-MyRMClient -Name SSH -Executable "ssh.exe" -Arguments "-l <user> -p <port> <host>" -DefaultPort 22
+    PS> Add-PortalClient -Name SSH -Executable "ssh.exe" -Arguments "-l <user> -p <port> <host>" -DefaultPort 22
 
     .EXAMPLE
-    PS> Add-MyRMClient -Name MyCustomClient -Executable "client.exe" -Arguments "--hostname <host> --port <port>" -DefaultPort 666 -DefaultScope External -Description "My custom client"
+    PS> Add-PortalClient -Name MyCustomClient -Executable "client.exe" -Arguments "--hostname <host> --port <port>" -DefaultPort 666 -DefaultScope External -Description "My custom client"
 
     #>
 
@@ -74,7 +74,7 @@ function Add-MyRMClient {
         [UInt16] $DefaultPort,
 
         [Parameter(
-            HelpMessage = "Default scope in which a connection will be invoked."
+            HelpMessage = "Default scope in which a connection will be opened."
         )]
         [ValidateNotNullOrEmpty()]
         [Scopes] $DefaultScope = [Scopes]::Console,
@@ -87,7 +87,9 @@ function Add-MyRMClient {
 
     begin {
         $ErrorActionPreference = "Stop"
+    }
 
+    process {
         try {
             $Inventory = Import-Inventory
         }
@@ -96,9 +98,16 @@ function Add-MyRMClient {
                 "Error inventory: {0}" -f $_.Exception.Message
             )
         }
-    }
 
-    process {
+        try {
+            [Client]::ValidateTokenizedArgs($Arguments)
+        }
+        catch {
+            Write-Error -Message (
+                $_.Exception.Message
+            )
+        }
+
         try {
             $Client = New-Object -TypeName Client -ArgumentList @(
                 $Name,
@@ -121,6 +130,7 @@ function Add-MyRMClient {
             )
         ) {
             $Inventory.AddClient($Client)
+
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (

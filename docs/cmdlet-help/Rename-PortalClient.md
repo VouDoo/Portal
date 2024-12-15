@@ -1,41 +1,36 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# Invoke-MyRMConnection
+# Rename-PortalClient
 
 ## SYNOPSIS
-Invokes MyRemoteManager connection.
+Renames Portal client.
 
 ## SYNTAX
 
 ```
-Invoke-MyRMConnection [-Name] <String> [-Client <String>] [-User <String>] [-Scope <Scopes>] [-WhatIf]
+Rename-PortalClient [-Name] <String> [-NewName] <String> [-ProgressAction <ActionPreference>] [-WhatIf]
  [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Invokes MyRemoteManager connection which is defined in the inventory.
+Renames client entry from the Portal inventory file.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Invoke-MyRMConnection myconn
-```
-
-### EXAMPLE 2
-```
-Invoke-MyRMConnection -Name myconn -Client SSH -User root -Scope Console
+Rename-PortalClient -Name my_old_client -NewName my_new_client
 ```
 
 ## PARAMETERS
 
 ### -Name
-Name of the connection.
+Name of the client to rename.
 
 ```yaml
 Type: String
@@ -49,47 +44,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Client
-Name of the client to use to initiate the connection.
+### -NewName
+New name for the client.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: c
+Aliases:
 
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -User
-Name of the user to connect with.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: u
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Scope
-Scope in which the connection will be invoked.
-
-```yaml
-Type: Scopes
-Parameter Sets: (All)
-Aliases: x
-Accepted values: Undefined, Console, External
-
-Required: False
-Position: Named
+Required: True
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -126,12 +90,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to Invoke-MyRMConnection.
+### None. You cannot pipe objects to Rename-PortalClient.
 ## OUTPUTS
 
 ### System.Void. None.

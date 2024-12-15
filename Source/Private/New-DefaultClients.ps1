@@ -21,14 +21,13 @@ function New-DefaultClients {
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Scope = "Function", Target = "*")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseSingularNouns", "", Scope = "Function", Target = "*")]
     [OutputType([Client[]])]
     param ()
 
-    begin {
-        $DefaultClient = @()
-    }
-
     process {
+        $DefaultClient = @()
+
         # OpenSSH (Microsoft Windows feature)
         $DefaultClient += New-Object -TypeName Client -ArgumentList @(
             "OpenSSH",
@@ -58,9 +57,7 @@ function New-DefaultClients {
             [Scopes]::External,
             "Microsoft Remote Desktop"
         )
-    }
 
-    end {
         $DefaultClient
     }
 }

@@ -1,51 +1,52 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# New-MyRMInventory
+# New-PortalInventory
 
 ## SYNOPSIS
-Creates MyRemoteManager inventory file.
+Creates Portal inventory file.
 
 ## SYNTAX
 
 ```
-New-MyRMInventory [-NoDefaultClients] [-Force] [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+New-PortalInventory [-NoDefaultClients] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates a new inventory file where MyRemoteManager saves items.
+Creates a new inventory file where Portal saves items.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-New-MyRMInventory
+New-PortalInventory
 ```
 
 ### EXAMPLE 2
 ```
-New-MyRMInventory -NoDefaultClients
+New-PortalInventory -NoDefaultClients
 ```
 
 ### EXAMPLE 3
 ```
-New-MyRMInventory -Force
+New-PortalInventory -Force
 ```
 
 ### EXAMPLE 4
 ```
-New-MyRMInventory -PassThru
-C:\Users\MyUsername\MyRemoteManager.json
+New-PortalInventory -PassThru
+C:\Users\MyUsername\Portal.json
 ```
 
 ### EXAMPLE 5
 ```
-New-MyRMInventory -NoDefaultClients -Force -PassThru
-C:\Users\MyUsername\MyRemoteManager.json
+New-PortalInventory -NoDefaultClients -Force -PassThru
+C:\Users\MyUsername\Portal.json
 ```
 
 ## PARAMETERS
@@ -126,17 +127,32 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to New-MyRMInventory.
+### None. You cannot pipe objects to New-PortalInventory.
 ## OUTPUTS
 
 ### System.Void. None.
 ###     or if PassThru is set,
-### System.String. New-MyRMInventory returns a string with the path to the created inventory.
+### System.String. New-PortalInventory returns a string with the path to the created inventory.
 ## NOTES
 
 ## RELATED LINKS

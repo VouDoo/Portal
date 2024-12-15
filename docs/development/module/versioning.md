@@ -12,7 +12,7 @@ In the examples, this is represented by `M.m.p`.
 To bump the version number of the module,
 edit the following files:
 
-- Module manifest `Source\MyRemoteManager.psd1`, edit `ModuleVersion`:
+- Module manifest `Source\Portal.psd1`, edit `ModuleVersion`:
 
    ```powershell
    @{

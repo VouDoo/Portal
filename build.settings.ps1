@@ -1,6 +1,6 @@
 $ProjectRoot = $PSScriptRoot
 
-$ModuleName = "MyRemoteManager"
+$ModuleName = "Portal"
 $ModuleVersion = "0.3.3"
 
 $Source = Join-Path -Path $ProjectRoot -ChildPath "Source"
@@ -17,15 +17,15 @@ $Docs = Join-Path -Path $ProjectRoot -ChildPath "docs"
     # Source
     Source                      = $Source
     SourceHeader                = Get-Item -Path "$Source\$ModuleName.Header.ps1"
-    SourceEnum                  = Get-ChildItem -Path "$Source\Enum\*.ps1"
-    SourceClasses               = Get-ChildItem -Path "$Source\Classes\*.ps1" | Sort-Object Name
-    SourcePrivateFunctions      = Get-ChildItem -Path "$Source\Private\*.ps1"
-    SourcePublicFunctions       = Get-ChildItem -Path "$Source\Public\*.ps1"
-    #SourceData                  = Join-Path -Path $Source -ChildPath "Data"
+    SourceEnum                  = Get-ChildItem -Path "$Source\Enum" -Include "*.ps1" -Recurse -File
+    SourceClasses               = Get-ChildItem -Path "$Source\Classes" -Include "*.ps1" -Recurse -File | Sort-Object Name
+    SourcePrivateFunctions      = Get-ChildItem -Path "$Source\Private" -Include "*.ps1" -Recurse -File
+    SourcePublicFunctions       = Get-ChildItem -Path "$Source\Public" -Include "*.ps1" -Recurse -File
+    #SourceDataFiles             = Get-ChildItem -Path "$Source\Data"
     SourceManifest              = Join-Path -Path $Source -ChildPath "$ModuleName.psd1"
     # Tests
     Tests                       = $Tests
-    TestsFiles                  = Get-ChildItem -File -Path $Tests -Include "*.Tests.ps1" -Recurse
+    TestsFiles                  = Get-ChildItem -Path $Tests -Include "*.Tests.ps1" -Recurse -File
     TestsScriptAnalyzerSettings = Join-Path -Path $Tests -ChildPath "PSScriptAnalyzerSettings.psd1"
     TestOut                     = Join-Path -Path $Tests -ChildPath "TestResults.xml"
     # Out
@@ -39,6 +39,6 @@ $Docs = Join-Path -Path $ProjectRoot -ChildPath "docs"
     DocsHelpOutEncoding         = "UTF-8"  # System.Text.Encoding
     DocsHelpLocale              = "EN-US"
     # Publish
-    PublishApiKeyEnvVar         = "{0}_API_KEY" -f $ModuleName
+    PublishApiKeyEnvVar         = "{0}_PSGALLERY_API_KEY" -f $ModuleName.ToUpper()
     PublishRepository           = "PSGallery"
 }

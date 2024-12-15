@@ -2,55 +2,55 @@ BeforeAll {
     $Module = Get-Item -Path $env:PESTER_FILE_TO_TEST
     Import-Module -Name $Module.FullName -Force
 
-    $env:MY_RM_INVENTORY = Join-Path -Path $TestDrive -ChildPath "MyRemoteManager.json"
+    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "Portal.json"
 }
-Describe "New-MyRMInventory" {
+Describe "New-PortalInventory" {
     It "Creates a new inventory file" {
-        New-MyRMInventory -PassThru | Should -BeExactly $env:MY_RM_INVENTORY
+        New-PortalInventory -PassThru | Should -BeExactly $env:PORTAL_INVENTORY
     }
     It "Creates a new inventory file even if it already exists, and fails" {
-        { New-MyRMInventory -PassThru } | Should -Throw -ExceptionType "System.IO.IOException"
+        { New-PortalInventory -PassThru } | Should -Throw -ExceptionType "System.IO.IOException"
     }
     It "Forces the creation of a new inventory file" {
-        New-MyRMInventory -Force -PassThru | Should -BeExactly $env:MY_RM_INVENTORY
+        New-PortalInventory -Force -PassThru | Should -BeExactly $env:PORTAL_INVENTORY
     }
     It "Checks if a backup file has been created" {
-        $TestInventoryBackupFile = $env:MY_RM_INVENTORY + ".backup"
+        $TestInventoryBackupFile = $env:PORTAL_INVENTORY + ".backup"
         Test-Path -Path $TestInventoryBackupFile -PathType Leaf | Should -BeTrue
     }
     It "Validates the JSON content from the inventory file" {
-        $PSObject = Get-Content -Path $env:MY_RM_INVENTORY | ConvertFrom-Json -AsHashtable
+        $PSObject = Get-Content -Path $env:PORTAL_INVENTORY | ConvertFrom-Json -AsHashtable
         $PSObject.ContainsKey("Connections") | Should -BeTrue
         $PSObject.ContainsKey("Clients") | Should -BeTrue
         $PSObject.ContainsKey("Foo") | Should -BeFalse
     }
 }
-Describe "Get-MyRMInventoryInfo" {
+Describe "Get-PortalInventory" {
     BeforeAll {
-        New-MyRMInventory -Force
+        New-PortalInventory -Force
     }
     It "Collects information about the inventory" {
-        $Info = Get-MyRMInventoryInfo
-        $Info.Path | Should -BeExactly $env:MY_RM_INVENTORY
-        $Info.EnvVariable | Should -BeExactly "MY_RM_INVENTORY"
+        $Info = Get-PortalInventory
+        $Info.Path | Should -BeExactly $env:PORTAL_INVENTORY
+        $Info.EnvVariable | Should -BeExactly "PORTAL_INVENTORY"
         $Info.FileExists | Should -BeTrue
         $Info.NumberOfClients | Should -BeExactly 3
         $Info.NumberOfConnections | Should -BeExactly 0
     }
     It "Collects information about the inventory with a different path" {
-        $env:MY_RM_INVENTORY = Join-Path -Path $TestDrive -ChildPath "OtherInventory.json"
-        $Info = Get-MyRMInventoryInfo
-        $Info.Path | Should -BeExactly $env:MY_RM_INVENTORY
-        $Info.EnvVariable | Should -BeExactly "MY_RM_INVENTORY"
+        $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "OtherInventory.json"
+        $Info = Get-PortalInventory
+        $Info.Path | Should -BeExactly $env:PORTAL_INVENTORY
+        $Info.EnvVariable | Should -BeExactly "PORTAL_INVENTORY"
         $Info.FileExists | Should -BeFalse
         $Info.NumberOfClients | Should -BeExactly 0
         $Info.NumberOfConnections | Should -BeExactly 0
     }
 }
-Describe "Set-MyRMInventoryPath" {
+Describe "Set-PortalInventory" {
     It "Sets the inventory path and creates a new file" {
-        $CustomPath = Join-Path -Path $TestDrive -ChildPath "MyOtherRemoteManager.json"
-        Set-MyRMInventoryPath -Path $CustomPath -Target "Process"
-        New-MyRMInventory -Force -PassThru | Should -BeExactly $CustomPath
+        $CustomPath = Join-Path -Path $TestDrive -ChildPath "MyOtherPortal.json"
+        Set-PortalInventory -Path $CustomPath -Target "Process"
+        New-PortalInventory -Force -PassThru | Should -BeExactly $CustomPath
     }
 }

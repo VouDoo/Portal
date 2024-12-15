@@ -1,28 +1,28 @@
-function Test-MyRMConnection {
+function Test-Portal {
 
     <#
 
     .SYNOPSIS
-    Tests MyRemoteManager connection.
+    Tests Portal connection.
 
     .DESCRIPTION
-    Tests MyRemoteManager connection which is defined in the inventory.
+    Tests Portal connection which is defined in the inventory.
 
     .PARAMETER Name
     Name of the connection.
 
     .INPUTS
-    None. You cannot pipe objects to Test-MyRMConnection.
+    None. You cannot pipe objects to Test-Portal.
 
     .OUTPUTS
-    System.String. Test-MyRMConnection returns a string with the status of the remote host.
+    System.String. Test-Portal returns a string with the status of the remote host.
 
     .EXAMPLE
-    PS> Test-MyRMConnection myconn
+    PS> Test-Portal myconn
     (status)
 
     .EXAMPLE
-    PS> Test-MyRMConnection -Name myconn
+    PS> Test-Portal -Name myconn
     (status)
 
     #>
@@ -40,12 +40,10 @@ function Test-MyRMConnection {
         [string] $Name
     )
 
-    begin {
+    process {
         $Inventory = Import-Inventory
         $Status = "Unknown"
-    }
 
-    process {
         $Connection = $Inventory.GetConnection($Name)
 
         $Port = if ($Connection.IsDefaultPort()) {
@@ -80,9 +78,7 @@ function Test-MyRMConnection {
             Write-Error -Message $_.Exception.Message
             $Status = "CriticalFailure"
         }
-    }
 
-    end {
         $Status
     }
 }
