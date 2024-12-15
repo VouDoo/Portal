@@ -129,7 +129,7 @@ Simply run:
 New-PortalInventory
 ```
 
-By default, the inventory file is created in your user's home directory as `Portal.json`.
+By default, the inventory file is created in `%APPDATA%\Portal\inventory.json`.
 
 To use a custom path, run:
 

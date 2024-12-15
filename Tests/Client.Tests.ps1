@@ -2,7 +2,7 @@ BeforeAll {
     $Module = Get-Item -Path $env:PESTER_FILE_TO_TEST
     Import-Module -Name $Module.FullName -Force
 
-    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "Portal.json"
+    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "inventory.json"
     New-PortalInventory -NoDefaultClients
 }
 Describe "Add-PortalClient" {
@@ -81,18 +81,18 @@ Describe "Get-PortalClient" {
         (Get-PortalClient).count | Should -BeExactly 4
     }
     It "Gets Clients filtered by name" {
-        (Get-PortalClient -name "ClientTest*")[0].Name | Should -BeExactly "ClientTest4"
+        (Get-PortalClient -Name "ClientTest*")[0].Name | Should -BeExactly "ClientTest4"
     }
     It "Gets Clients filtered by name that do not exist" {
-        (Get-PortalClient -name "ClientTestt*") | Should -BeNullOrEmpty
+        (Get-PortalClient -Name "ClientTestt*") | Should -BeNullOrEmpty
     }
 }
 Describe "Remove-PortalClient" {
     It "Removes an existing Client" {
-        Remove-PortalClient -name "TestClient1" | Should -BeNullOrEmpty
+        Remove-PortalClient -Name "TestClient1" | Should -BeNullOrEmpty
     }
     It "Removes a client that does not exist, and fails" {
-        { Remove-PortalClient -name "TestClient0" } | Should -Throw
+        { Remove-PortalClient -Name "TestClient0" } | Should -Throw
     }
 }
 Describe "Rename-PortalClient" {
@@ -115,18 +115,18 @@ Describe "Rename-PortalClient" {
         }
     }
     It "Renames an existing client" {
-        Rename-PortalClient -name "BadlyNamedClient" -NewName "NicelyNamedClient"
+        Rename-PortalClient -Name "BadlyNamedClient" -NewName "NicelyNamedClient"
         | Should -BeNullOrEmpty
     }
     It "Renames a client that does not exist, and fails" {
-        { Rename-PortalClient -name "MissingClient" -NewName "NopeClient" } | Should -Throw
+        { Rename-PortalClient -Name "MissingClient" -NewName "NopeClient" } | Should -Throw
     }
     It "Renames a client with a name already used, and fails" {
-        { Rename-PortalClient -name "NicelyNamedClient" -NewName "WhateverClient" }
+        { Rename-PortalClient -Name "NicelyNamedClient" -NewName "WhateverClient" }
         | Should -Throw -ExpectedMessage "Cannot rename Client `"NicelyNamedClient`" to `"WhateverClient`" as this name is already used."
     }
     It "Uses same name for renaming, and fails" {
-        { Rename-PortalClient -name "NicelyNamedClient" -NewName "NicelyNamedClient" }
+        { Rename-PortalClient -Name "NicelyNamedClient" -NewName "NicelyNamedClient" }
         | Should -Throw -ExpectedMessage "The two names are similar."
     }
 }

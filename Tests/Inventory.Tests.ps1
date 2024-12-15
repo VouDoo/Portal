@@ -2,7 +2,7 @@ BeforeAll {
     $Module = Get-Item -Path $env:PESTER_FILE_TO_TEST
     Import-Module -Name $Module.FullName -Force
 
-    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "Portal.json"
+    $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "inventory.json"
 }
 Describe "New-PortalInventory" {
     It "Creates a new inventory file" {
@@ -49,7 +49,7 @@ Describe "Get-PortalInventory" {
 }
 Describe "Set-PortalInventory" {
     It "Sets the inventory path and creates a new file" {
-        $CustomPath = Join-Path -Path $TestDrive -ChildPath "MyOtherPortal.json"
+        $CustomPath = Join-Path -Path $TestDrive -ChildPath "other_inventory.json"
         Set-PortalInventory -Path $CustomPath -Target "Process"
         New-PortalInventory -Force -PassThru | Should -BeExactly $CustomPath
     }
