@@ -1,27 +1,27 @@
-function Rename-MyRMConnection {
+function Rename-PortalClient {
 
     <#
 
     .SYNOPSIS
-    Renames MyRemoteManager connection.
+    Renames Portal client.
 
     .DESCRIPTION
-    Renames connection entry from the MyRemoteManager inventory file.
+    Renames client entry from the Portal inventory file.
 
     .PARAMETER Name
-    Name of the connection to rename.
+    Name of the client to rename.
 
     .PARAMETER NewName
-    New name for the connection.
+    New name for the client.
 
     .INPUTS
-    None. You cannot pipe objects to Rename-MyRMConnection.
+    None. You cannot pipe objects to Rename-PortalClient.
 
     .OUTPUTS
     System.Void. None.
 
     .EXAMPLE
-    PS> Rename-MyRMConnection -Name my_old_conn -NewName my_new_conn
+    PS> Rename-PortalClient -Name my_old_client -NewName my_new_client
 
     #>
 
@@ -31,16 +31,16 @@ function Rename-MyRMConnection {
         [Parameter(
             Position = 0,
             Mandatory = $true,
-            HelpMessage = "Name of the connection to rename."
+            HelpMessage = "Name of the client to rename."
         )]
-        [ValidateSet([ValidateSetConnectionName])]
-        [ValidateConnectionName()]
+        [ValidateSet([ValidateSetClientName])]
+        [ValidateClientName()]
         [string] $Name,
 
         [Parameter(
             Position = 1,
             Mandatory = $true,
-            HelpMessage = "New name for the connection."
+            HelpMessage = "New name for the client."
         )]
         [ValidateNotNullOrEmpty()]
         [string] $NewName
@@ -62,15 +62,15 @@ function Rename-MyRMConnection {
 
         if ($PSCmdlet.ShouldProcess(
                 "Inventory file {0}" -f $Inventory.Path,
-                ("Rename Connection {0} to {1}" -f $Name, $NewName)
+                ("Rename Client {0} to {1}" -f $Name, $NewName)
             )
         ) {
-            $Inventory.RenameConnection($Name, $NewName)
+            $Inventory.RenameClient($Name, $NewName)
 
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (
-                    "Connection `"{0}`" has been renamed `"{1}`" in the inventory." -f $Name, $NewName
+                    "Client `"{0}`" has been renamed `"{1}`" in the inventory." -f $Name, $NewName
                 )
             }
             catch {

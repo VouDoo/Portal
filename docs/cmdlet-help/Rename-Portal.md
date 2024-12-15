@@ -1,35 +1,36 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# Rename-MyRMClient
+# Rename-Portal
 
 ## SYNOPSIS
-Renames MyRemoteManager client.
+Renames Portal connection.
 
 ## SYNTAX
 
 ```
-Rename-MyRMClient [-Name] <String> [-NewName] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Rename-Portal [-Name] <String> [-NewName] <String> [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Renames client entry from the MyRemoteManager inventory file.
+Renames connection entry from the Portal inventory file.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Rename-MyRMClient -Name my_old_client -NewName my_new_client
+Rename-Portal -Name my_old_conn -NewName my_new_conn
 ```
 
 ## PARAMETERS
 
 ### -Name
-Name of the client to rename.
+Name of the connection to rename.
 
 ```yaml
 Type: String
@@ -44,7 +45,7 @@ Accept wildcard characters: False
 ```
 
 ### -NewName
-New name for the client.
+New name for the connection.
 
 ```yaml
 Type: String
@@ -89,12 +90,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to Rename-MyRMClient.
+### None. You cannot pipe objects to Rename-Portal.
 ## OUTPUTS
 
 ### System.Void. None.

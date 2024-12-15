@@ -81,21 +81,21 @@ Describe "Get-PortalClient" {
         (Get-PortalClient).count | Should -BeExactly 4
     }
     It "Gets Clients filtered by name" {
-        (Get-PortalClient -Name "ClientTest*")[0].Name | Should -BeExactly "ClientTest4"
+        (Get-PortalClient -name "ClientTest*")[0].Name | Should -BeExactly "ClientTest4"
     }
     It "Gets Clients filtered by name that do not exist" {
-        (Get-PortalClient -Name "ClientTestt*") | Should -BeNullOrEmpty
+        (Get-PortalClient -name "ClientTestt*") | Should -BeNullOrEmpty
     }
 }
 Describe "Remove-PortalClient" {
     It "Removes an existing Client" {
-        Remove-PortalClient -Name "TestClient1" | Should -BeNullOrEmpty
+        Remove-PortalClient -name "TestClient1" | Should -BeNullOrEmpty
     }
     It "Removes a client that does not exist, and fails" {
-        { Remove-PortalClient -Name "TestClient0" } | Should -Throw
+        { Remove-PortalClient -name "TestClient0" } | Should -Throw
     }
 }
-Describe "Rename-MyRMClient" {
+Describe "Rename-PortalClient" {
     BeforeAll {
         @(
             @{
@@ -111,22 +111,22 @@ Describe "Rename-MyRMClient" {
                 DefaultPort = 666
             }
         ) | ForEach-Object -Process {
-            Add-MyRMClient @_
+            Add-PortalClient @_
         }
     }
     It "Renames an existing client" {
-        Rename-MyRMClient -Name "BadlyNamedClient" -NewName "NicelyNamedClient"
+        Rename-PortalClient -name "BadlyNamedClient" -NewName "NicelyNamedClient"
         | Should -BeNullOrEmpty
     }
     It "Renames a client that does not exist, and fails" {
-        { Rename-MyRMClient -Name "MissingClient" -NewName "NopeClient" } | Should -Throw
+        { Rename-PortalClient -name "MissingClient" -NewName "NopeClient" } | Should -Throw
     }
     It "Renames a client with a name already used, and fails" {
-        { Rename-MyRMClient -Name "NicelyNamedClient" -NewName "WhateverClient" }
+        { Rename-PortalClient -name "NicelyNamedClient" -NewName "WhateverClient" }
         | Should -Throw -ExpectedMessage "Cannot rename Client `"NicelyNamedClient`" to `"WhateverClient`" as this name is already used."
     }
     It "Uses same name for renaming, and fails" {
-        { Rename-MyRMClient -Name "NicelyNamedClient" -NewName "NicelyNamedClient" }
+        { Rename-PortalClient -name "NicelyNamedClient" -NewName "NicelyNamedClient" }
         | Should -Throw -ExpectedMessage "The two names are similar."
     }
 }
