@@ -23,6 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Cmdlet `Set-MyRMInventoryPath` renamed to `Set-PortalInventory`
   - Cmdlet `Test-MyRMConnection` renamed to `Test-Portal`
 
+### Added
+
+- `Rename-Portal` renames a connection entry
+- `Rename-PortalClient` renames a client entry
+
 ## [0.3.3]
 
 ## Fixed
