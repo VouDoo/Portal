@@ -27,7 +27,7 @@
     #CompanyName          = ''
 
     # Copyright statement for this module
-    Copyright            = 'Copyright (c) 2021 by Maxence Grymonprez, licensed under MIT License.'
+    Copyright            = 'Copyright (c) 2024 by Maxence Grymonprez, licensed under MIT License.'
 
     # Description of the functionality provided by this module
     Description          = 'A simple remote connections manager for PowerShell in PowerShell.'
