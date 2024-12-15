@@ -1,6 +1,6 @@
 # Portal
 
-Portal is a PowerShell module that contains a collection of functions for managing remote connections from your terminal.
+Portal is a PowerShell module that contains a collection of functions for managing and opening remote connections from your terminal.
 
 _It is a very (very) simplified version of tools like mRemoteNG or MobaXterm._
 
