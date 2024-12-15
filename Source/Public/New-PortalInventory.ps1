@@ -78,7 +78,7 @@ function New-PortalInventory {
 
         if ($PSCmdlet.ShouldProcess($Inventory.Path, "Create inventory file")) {
             if (-not $NoDefaultClients.IsPresent) {
-                New-DefaultClient | ForEach-Object -Process {
+                New-DefaultClients | ForEach-Object -Process {
                     $Inventory.AddClient($_)
                 }
             }
