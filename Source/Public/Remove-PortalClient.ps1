@@ -1,27 +1,27 @@
-function Remove-MyRMConnection {
+function Remove-PortalClient {
 
     <#
 
     .SYNOPSIS
-    Removes MyRemoteManager connection.
+    Removes Portal client.
 
     .DESCRIPTION
-    Removes connection entry from the MyRemoteManager inventory file.
+    Removes client entry from the Portal inventory file.
 
     .PARAMETER Name
-    Name of the connection.
+    Name of the client.
 
     .INPUTS
-    None. You cannot pipe objects to Remove-MyRMConnection.
+    None. You cannot pipe objects to Remove-PortalClient.
 
     .OUTPUTS
     System.Void. None.
 
     .EXAMPLE
-    PS> Remove-MyRMConnection myconn
+    PS> Remove-PortalClient SSH
 
     .EXAMPLE
-    PS> Remove-MyRMConnection -Name myconn
+    PS> Remove-PortalClient -Name SSH
 
     #>
 
@@ -31,10 +31,10 @@ function Remove-MyRMConnection {
         [Parameter(
             Position = 0,
             Mandatory = $true,
-            HelpMessage = "Name of the connection."
+            HelpMessage = "Name of the client."
         )]
-        [ValidateSet([ValidateSetConnectionName])]
-        [ValidateConnectionName()]
+        [ValidateSet([ValidateSetClientName])]
+        [ValidateClientName()]
         [string] $Name
     )
 
@@ -54,15 +54,15 @@ function Remove-MyRMConnection {
     process {
         if ($PSCmdlet.ShouldProcess(
                 "Inventory file {0}" -f $Inventory.Path,
-                "Remove Connection {0}" -f $Name
+                "Remove Client {0}" -f $Name
             )
         ) {
-            $Inventory.RemoveConnection($Name)
+            $Inventory.RemoveClient($Name)
 
             try {
                 $Inventory.SaveFile()
                 Write-Verbose -Message (
-                    "Connection `"{0}`" has been removed from the inventory." -f $Name
+                    "Client `"{0}`" has been removed from the inventory." -f $Name
                 )
             }
             catch {

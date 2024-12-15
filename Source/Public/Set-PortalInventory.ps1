@@ -1,12 +1,12 @@
-function Set-MyRMInventoryPath {
+function Set-PortalInventory {
 
     <#
 
     .SYNOPSIS
-    Sets MyRemoteManager inventory path.
+    Sets Portal inventory path.
 
     .DESCRIPTION
-    Sets the specific environment variable to overwrite default path to the MyRemoteManager inventory file.
+    Sets the specific environment variable to overwrite default path to the Portal inventory file.
 
     .PARAMETER Name
     Path to the inventory file.
@@ -17,16 +17,16 @@ function Set-MyRMInventoryPath {
     Target scope where the environment variable will be saved.
 
     .INPUTS
-    None. You cannot pipe objects to Set-MyRMInventoryPath.
+    None. You cannot pipe objects to Set-PortalInventory.
 
     .OUTPUTS
     System.Void. None.
 
     .EXAMPLE
-    PS> Set-MyRMInventoryPath C:\MyCustomInventory.json
+    PS> Set-PortalInventory C:\MyCustomInventory.json
 
     .EXAMPLE
-    PS> Set-MyRMInventoryPath -Path C:\MyCustomInventory.json
+    PS> Set-PortalInventory -Path C:\MyCustomInventory.json
 
     #>
 

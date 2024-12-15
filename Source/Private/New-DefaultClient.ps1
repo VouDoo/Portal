@@ -1,4 +1,4 @@
-function New-DefaultClients {
+function New-DefaultClient {
 
     <#
 
@@ -9,13 +9,13 @@ function New-DefaultClients {
     Creates and returns Client objects with popular programs.
 
     .INPUTS
-    None. You cannot pipe objects to New-DefaultClients.
+    None. You cannot pipe objects to New-DefaultClient.
 
     .OUTPUTS
-    Client[]. New-DefaultClients returns an array of Client objects.
+    Client[]. New-DefaultClient returns an array of Client objects.
 
     .EXAMPLE
-    PS> New-DefaultClients
+    PS> New-DefaultClient
     (Client[])
 
     #>

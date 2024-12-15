@@ -1,5 +1,5 @@
 enum Scopes {
-    # Scopes in which a connection can be invoked
+    # Scopes in which a connection can be opened
 
     Undefined = 1
     Console = 2

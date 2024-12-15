@@ -1,46 +1,42 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# Add-MyRMConnection
+# Add-PortalClient
 
 ## SYNOPSIS
-Adds MyRemoteManager connection.
+Adds Portal client.
 
 ## SYNTAX
 
 ```
-Add-MyRMConnection [-Name] <String> [-Hostname] <String> [[-Port] <UInt16>] [-DefaultClient] <String>
- [[-DefaultUser] <String>] [[-Description] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Add-PortalClient [-Name] <String> [-Executable] <String> [-Arguments] <String> [-DefaultPort] <UInt16>
+ [[-DefaultScope] <Scopes>] [[-Description] <String>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Adds connection entry to the MyRemoteManager inventory file.
+Adds client entry to the Portal inventory file.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Add-MyRMConnection -Name myconn -Hostname myhost -DefaultClient SSH
+Add-PortalClient -Name SSH -Executable "ssh.exe" -Arguments "-l <user> -p <port> <host>" -DefaultPort 22
 ```
 
 ### EXAMPLE 2
 ```
-Add-MyRMConnection -Name myrdpconn -Hostname myhost -DefaultClient RDP -Description "My RDP connection"
-```
-
-### EXAMPLE 3
-```
-Add-MyRMConnection -Name mysshconn -Hostname myhost -Port 2222 -DefaultClient SSH -DefaultUser myuser -Description "My SSH connection"
+Add-PortalClient -Name MyCustomClient -Executable "client.exe" -Arguments "--hostname <host> --port <port>" -DefaultPort 666 -DefaultScope External -Description "My custom client"
 ```
 
 ## PARAMETERS
 
 ### -Name
-Name of the connection.
+Name of the client.
 
 ```yaml
 Type: String
@@ -54,8 +50,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Hostname
-Name of the remote host.
+### -Executable
+Path to the executable program that the client uses.
 
 ```yaml
 Type: String
@@ -69,24 +65,10 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Port
-Port to connect to on the remote host.
-If not set, it will use the default port of the client.
-
-```yaml
-Type: UInt16
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: 0
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DefaultClient
-Name of the default client.
+### -Arguments
+String of Arguments to pass to the executable.
+The string should contain the required tokens.
+Please read the documentation of Portal.
 
 ```yaml
 Type: String
@@ -94,29 +76,45 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DefaultUser
-Default client to use to connect to the remote host.
+### -DefaultPort
+Network port to use if the connection has no defined port.
 
 ```yaml
-Type: String
+Type: UInt16
 Parameter Sets: (All)
 Aliases:
 
+Required: True
+Position: 4
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DefaultScope
+Default scope in which a connection will be opened.
+
+```yaml
+Type: Scopes
+Parameter Sets: (All)
+Aliases:
+Accepted values: Undefined, Console, External
+
 Required: False
 Position: 5
-Default value: None
+Default value: Console
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -Description
-Short description for the connection.
+Short description for the client.
 
 ```yaml
 Type: String
@@ -161,12 +159,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to Add-MyRMConnection.
+### None. You cannot pipe objects to Add-PortalClient.
 ## OUTPUTS
 
 ### System.Void. None.

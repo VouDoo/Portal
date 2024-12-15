@@ -1,6 +1,6 @@
 $ProjectRoot = $PSScriptRoot
 
-$ModuleName = "MyRemoteManager"
+$ModuleName = "Portal"
 $ModuleVersion = "0.3.3"
 
 $Source = Join-Path -Path $ProjectRoot -ChildPath "Source"
@@ -39,6 +39,6 @@ $Docs = Join-Path -Path $ProjectRoot -ChildPath "docs"
     DocsHelpOutEncoding         = "UTF-8"  # System.Text.Encoding
     DocsHelpLocale              = "EN-US"
     # Publish
-    PublishApiKeyEnvVar         = "{0}_API_KEY" -f $ModuleName
+    PublishApiKeyEnvVar         = "{0}_PSGALLERY_API_KEY" -f $ModuleName.ToUpper()
     PublishRepository           = "PSGallery"
 }

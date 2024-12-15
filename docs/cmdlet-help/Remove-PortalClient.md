@@ -1,34 +1,35 @@
 ﻿---
-external help file: MyRemoteManager-help.xml
-Module Name: MyRemoteManager
+external help file: Portal-help.xml
+Module Name: Portal
 online version:
 schema: 2.0.0
 ---
 
-# Remove-MyRMClient
+# Remove-PortalClient
 
 ## SYNOPSIS
-Removes MyRemoteManager client.
+Removes Portal client.
 
 ## SYNTAX
 
 ```
-Remove-MyRMClient [-Name] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-PortalClient [-Name] <String> [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Removes client entry from the MyRemoteManager inventory file.
+Removes client entry from the Portal inventory file.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Remove-MyRMClient SSH
+Remove-PortalClient SSH
 ```
 
 ### EXAMPLE 2
 ```
-Remove-MyRMClient -Name SSH
+Remove-PortalClient -Name SSH
 ```
 
 ## PARAMETERS
@@ -79,12 +80,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
-### None. You cannot pipe objects to Remove-MyRMClient.
+### None. You cannot pipe objects to Remove-PortalClient.
 ## OUTPUTS
 
 ### System.Void. None.

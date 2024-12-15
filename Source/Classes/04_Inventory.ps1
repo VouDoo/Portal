@@ -1,8 +1,8 @@
 class Inventory {
     # Title for the inventory file
-    [string] $Title = "MyRemoteManager inventory"
+    [string] $Title = "Portal inventory"
     # description for the inventory file
-    [string] $Description = "MyRemoteManager inventory file where the connections and clients are stored"
+    [string] $Description = "Portal inventory file where the connections and clients are stored"
     # Version of the inventory file
     [string] $Version = "0.1.0"
     # Path to the inventory file
@@ -14,7 +14,7 @@ class Inventory {
     # Encoding for inventory file
     static [string] $Encoding = "utf-8"
     # Name of the environement variable to use a custom path to the inventory file
-    static [string] $EnvVariable = "MY_RM_INVENTORY"
+    static [string] $EnvVariable = "PORTAL_INVENTORY"
 
     static [string] GetPath() {
         foreach ($Target in @("Process", "User", "Machine")) {
@@ -24,7 +24,7 @@ class Inventory {
             )
             if ($Value) { return $Value }
         }
-        return Join-Path -Path $env:USERPROFILE -ChildPath "MyRemoteManager.json"
+        return Join-Path -Path $env:USERPROFILE -ChildPath "Portal.json"
     }
 
     [void] ReadFile() {

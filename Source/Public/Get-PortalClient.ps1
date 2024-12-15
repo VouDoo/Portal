@@ -1,29 +1,29 @@
-function Get-MyRMClient {
+function Get-PortalClient {
 
     <#
 
     .SYNOPSIS
-    Gets MyRemoteManager clients.
+    Gets Portal clients.
 
     .DESCRIPTION
-    Gets available clients from the MyRemoteManager inventory file.
+    Gets available clients from the Portal inventory file.
     Clients can be filtered by their name.
 
     .PARAMETER Name
     Filters clients by name.
 
     .INPUTS
-    None. You cannot pipe objects to Get-MyRMClient.
+    None. You cannot pipe objects to Get-PortalClient.
 
     .OUTPUTS
-    PSCustomObject. Get-MyRMClient returns objects with details of the available clients.
+    PSCustomObject. Get-PortalClient returns objects with details of the available clients.
 
     .EXAMPLE
-    PS> Get-MyRMClient
+    PS> Get-PortalClient
     (objects)
 
     .EXAMPLE
-    PS> Get-MyRMClient -Name "custom_*"
+    PS> Get-PortalClient -Name "custom_*"
     (filtered objects)
 
     #>

@@ -12,7 +12,7 @@ Note: _This is part of the default clients when a new inventory is created._
 - Default Scope: `Console`
 
 ```powershell
-Add-MyRMClient -Name OpenSSH -Executable "C:\Windows\System32\OpenSSH\ssh.exe" -Arguments "-l <user> -p <port> <host>" -DefaultPort 22 -DefaultScope Console -Description "OpenSSH (Microsoft Windows feature)"
+Add-PortalClient -Name OpenSSH -Executable "C:\Windows\System32\OpenSSH\ssh.exe" -Arguments "-l <user> -p <port> <host>" -DefaultPort 22 -DefaultScope Console -Description "OpenSSH (Microsoft Windows feature)"
 ```
 
 ## Putty SSH
@@ -25,7 +25,7 @@ Note: _This is part of the default clients when a new inventory is created._
 - Default Scope: `External`
 
 ```powershell
-Add-MyRMClient -Name PuTTY_SSH -Executable "putty.exe" -Arguments "-ssh -P <port> <user>@<host>" -DefaultPort 22 -DefaultScope External -Description "PuTTY using SSH protocol"
+Add-PortalClient -Name PuTTY_SSH -Executable "putty.exe" -Arguments "-ssh -P <port> <user>@<host>" -DefaultPort 22 -DefaultScope External -Description "PuTTY using SSH protocol"
 ```
 
 ## Remote Desktop
@@ -38,7 +38,7 @@ Note: _This is part of the default clients when a new inventory is created._
 - Default Scope: `External`
 
 ```powershell
-Add-MyRMClient -Name RD -Executable "C:\Windows\System32\mstsc.exe" -Arguments "/v:<host>:<port> /fullscreen" -DefaultPort 3389 -DefaultScope External -Description "Microsoft Remote Desktop"
+Add-PortalClient -Name RD -Executable "C:\Windows\System32\mstsc.exe" -Arguments "/v:<host>:<port> /fullscreen" -DefaultPort 3389 -DefaultScope External -Description "Microsoft Remote Desktop"
 ```
 
 ## Google Chrome
@@ -49,7 +49,7 @@ Add-MyRMClient -Name RD -Executable "C:\Windows\System32\mstsc.exe" -Arguments "
 - Default Scope: `External`
 
 ```powershell
-Add-MyRMClient -Name Chrome -Executable "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -Arguments "<host>:<port>" -DefaultPort 443 -DefaultScope External -Description "Google Chrome"
+Add-PortalClient -Name Chrome -Executable "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -Arguments "<host>:<port>" -DefaultPort 443 -DefaultScope External -Description "Google Chrome"
 ```
 
 ## Telnet from Microsoft Windows features
@@ -60,5 +60,5 @@ Add-MyRMClient -Name Chrome -Executable "C:\Program Files (x86)\Google\Chrome\Ap
 - Default Scope: `Console`
 
 ```powershell
-Add-MyRMClient -Name Telnet -Executable "C:\Windows\System32\telnet.exe" -Arguments "<host> <port>" -DefaultPort 23 -DefaultScope Console -Description "Telnet (Microsoft Windows feature)"
+Add-PortalClient -Name Telnet -Executable "C:\Windows\System32\telnet.exe" -Arguments "<host> <port>" -DefaultPort 23 -DefaultScope Console -Description "Telnet (Microsoft Windows feature)"
 ```

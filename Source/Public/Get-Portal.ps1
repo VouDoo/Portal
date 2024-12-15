@@ -1,29 +1,29 @@
-function Get-MyRMConnection {
+function Get-Portal {
 
     <#
 
     .SYNOPSIS
-    Gets MyRemoteManager connections.
+    Gets Portal connections.
 
     .DESCRIPTION
-    Gets available connections from the MyRemoteManager inventory file.
+    Gets available connections from the Portal inventory file.
     connections can be filtered by their name and/or client name.
 
     .PARAMETER Name
     Filters connections by name.
 
     .INPUTS
-    None. You cannot pipe objects to Get-MyRMConnection.
+    None. You cannot pipe objects to Get-Portal.
 
     .OUTPUTS
-    PSCustomObject. Get-MyRMConnection returns objects with details of the available connections.
+    PSCustomObject. Get-Portal returns objects with details of the available connections.
 
     .EXAMPLE
-    PS> Get-MyRMConnection
+    PS> Get-Portal
     (objects)
 
     .EXAMPLE
-    PS> Get-MyRMConnection -Name "myproject_*" -Hostname "*.mydomain" -Client "*_myproject"
+    PS> Get-Portal -Name "myproject_*" -Hostname "*.mydomain" -Client "*_myproject"
     (filtered objects)
 
     #>

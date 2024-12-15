@@ -1,21 +1,21 @@
-function Get-MyRMInventoryInfo {
+function Get-PortalInventory {
 
     <#
 
     .SYNOPSIS
-    Gets MyRemoteManager inventory information.
+    Gets Portal inventory information.
 
     .DESCRIPTION
-    Gets detailed information about the MyRemoteManager inventory.
+    Gets detailed information about the Portal inventory.
 
     .INPUTS
-    None. You cannot pipe objects to Get-MyRMInventoryInfo.
+    None. You cannot pipe objects to Get-PortalInventory.
 
     .OUTPUTS
-    PSCustomObject. Get-MyRMInventoryInfo returns an object with detailed information.
+    PSCustomObject. Get-PortalInventory returns an object with detailed information.
 
     .EXAMPLE
-    PS> Get-MyRMInventoryInfo
+    PS> Get-PortalInventory
     (objects)
 
     #>
