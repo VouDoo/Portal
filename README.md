@@ -1,14 +1,33 @@
 # Portal
 
-Portal is a PowerShell module that contains a collection of functions for managing and opening remote connections from your terminal.
+[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Portal)](https://www.powershellgallery.com/packages/Portal)
+[![PowerShell Gallery Downloads](https://img.shields.io/powershellgallery/dt/Portal)](https://www.powershellgallery.com/packages/Portal)
+[![CI](https://github.com/VouDoo/Portal/actions/workflows/ci.yml/badge.svg)](https://github.com/VouDoo/Portal/actions/workflows/ci.yml)
+
+Portal is a PowerShell module for managing and opening remote connections (SSH, Remote Desktop...) from your terminal, on Windows, Linux and macOS.
 
 _Think of Portal as a very basic version of mRemoteNG or MobaXterm, integrated directly into your shell..._
+
+## Quick start
+
+```powershell
+Install-Module -Name Portal    # Install the module from PowerShell Gallery
+New-PortalInventory            # Create your inventory, with default clients such as OpenSSH
+Add-Portal -Name myserver -Hostname server.example.com -DefaultClient OpenSSH -DefaultUser me
+Open-Portal myserver           # Connect!
+```
+
+![Portal demo](medias/intro.gif)
+
+_This demo was recorded when Portal was still named MyRemoteManager:
+`New-MyRMInventory`, `Add-MyRMConnection` and `Invoke-MyRMConnection` are now `New-PortalInventory`, `Add-Portal` and `Open-Portal`._
 
 ---
 
 Table of contents:
 
 - [Portal](#portal)
+  - [Quick start](#quick-start)
   - [Installation](#installation)
     - [Install from PowerShell Gallery](#install-from-powershell-gallery)
     - [Get released versions](#get-released-versions)
@@ -19,7 +38,9 @@ Table of contents:
     - [Add a client](#add-a-client)
     - [Add a connection](#add-a-connection)
     - [Open a connection](#open-a-connection)
+    - [Commands](#commands)
     - [Get help](#get-help)
+  - [Contributing](#contributing)
   - [License](#license)
   - [Support](#support)
 
@@ -27,16 +48,8 @@ Table of contents:
 
 ## Installation
 
-To install the PowerShell module, follow one of these methods:
-
-- [Install from PowerShell Gallery](#install-from-powershell-gallery)
-- [Get released versions](#get-released-versions)
-- [Build from Source](#build-from-source)
-
-Please note that the module is only available for PowerShell Core (7.1 or later).
-It works on Windows, Linux and macOS.
-
-Get the latest version of PS Core from [the official PowerShell repository](https://github.com/PowerShell/PowerShell/releases).
+Portal requires PowerShell 7.1 or later, on Windows, Linux or macOS.
+Get the latest version of PowerShell from [the official PowerShell repository](https://github.com/PowerShell/PowerShell/releases).
 
 ### Install from PowerShell Gallery
 
@@ -49,6 +62,8 @@ To install it, run:
 Install-Module -Name Portal -Repository PSGallery
 ```
 
+_On PowerShell 7.4 or later, you can also run `Install-PSResource -Name Portal`._
+
 ### Get released versions
 
 Download `Portal.zip` from [the "Releases" page](https://github.com/VouDoo/Portal/releases).
@@ -59,7 +74,7 @@ Extract it to your user modules directory:
 
 ### Build from Source
 
-1. Unblock downloaded scripts _(optional)_
+1. Unblock downloaded scripts _(optional, Windows only)_
 
     ```powershell
     Get-ChildItem -Filter *.ps1 | Unblock-File
@@ -68,7 +83,7 @@ Extract it to your user modules directory:
 2. Build the module
 
     ```powershell
-    .\build.ps1 build -Bootstrap
+    ./build.ps1 Build -Bootstrap
     ```
 
 3. Remove any old versions of the module
@@ -110,7 +125,7 @@ We also recommend that you create aliases for the most commonly used commands.
 Here is an example of code that you can add to your profile file:
 
 ```powershell
-# Add the following lines to your Microsoft.PowerShell_profile.ps1 file
+# Add the following lines to your profile (run "$PROFILE" to get its path)
 Import-Module -Name Portal
 New-Alias -Name connect -Value Open-Portal
 ```
@@ -161,7 +176,7 @@ To add a client, use `Add-PortalClient`.
 For instance:
 
 ```powershell
-Add-PortalClient -Name MySSH -Executable "ssh.exe" -Arguments "-l <user> -p <port> <host>" -DefaultPort 22 -DefaultScope Console -Description "My first SSH client"
+Add-PortalClient -Name MySSH -Executable "ssh" -Arguments "-l <user> -p <port> <host>" -DefaultPort 22 -DefaultScope Console -Description "My first SSH client"
 ```
 
 Find examples [here](examples/clients.md).
@@ -175,7 +190,7 @@ _Arguments are separated by spaces. Use quotes to keep several words in one argu
 |:--------:|:--------:| :---------- |
 | `<host>` | Yes      | Name of the remote host. |
 | `<port>` | Yes      | Port to connect to on the remote host. |
-| `<user>` | No       | Name of the user to log in with.</br>If set, `Open-Portal` will ask for a username at each execution. |
+| `<user>` | No       | Name of the user to log in with.</br>If set, `Open-Portal` needs a user: the `-User` parameter, or the default user of the connection. |
 
 The `-DefaultScope` parameter defines in which scope a connection will be opened by default.
 
@@ -207,6 +222,32 @@ Open-Portal Perseverance
 
 _Press TAB key to autocomplete the name of the connection._
 
+To use another user, client or scope for this time only, run:
+
+```powershell
+Open-Portal Perseverance -User root -Client MyOtherSSH -Scope External
+```
+
+### Commands
+
+| Command | Description |
+| :------ | :---------- |
+| `New-PortalInventory` | Creates the inventory file. |
+| `Get-PortalInventory` | Gets information about the inventory (path, number of clients and connections). |
+| `Set-PortalInventory` | Sets a custom path for the inventory file. |
+| `Add-PortalClient` | Adds a client. |
+| `Get-PortalClient` | Gets clients, filtered by name. |
+| `Rename-PortalClient` | Renames a client, and updates the connections using it. |
+| `Remove-PortalClient` | Removes a client. |
+| `Add-Portal` | Adds a connection. |
+| `Get-Portal` | Gets connections, filtered by name, hostname and/or default client. |
+| `Open-Portal` | Opens a connection. |
+| `Test-Portal` | Tests if the remote host of a connection is reachable on its port. |
+| `Rename-Portal` | Renames a connection. |
+| `Remove-Portal` | Removes a connection. |
+
+_Every command that changes the inventory supports `-WhatIf` and `-Confirm`._
+
 ### Get help
 
 Read help files in [docs/cmdlet-help](docs/cmdlet-help).
@@ -214,6 +255,10 @@ Read help files in [docs/cmdlet-help](docs/cmdlet-help).
 You can also use [the `Get-Help` Cmdlet](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/get-help) to obtain more information about a command.
 
 ---
+
+## Contributing
+
+To build, test and contribute to the module, read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
