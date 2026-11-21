@@ -90,6 +90,12 @@ Describe "Get-Portal" {
     It "Gets Connections filtered by name and hostname name" {
         (Get-Portal -Name "*tion3" -Hostname "*.test")[0].Name | Should -BeExactly "TestConnection3"
     }
+    It "Gets the custom port of a connection" {
+        (Get-Portal -Name "ConnectionTest4").Port | Should -BeExactly 6666
+    }
+    It "Gets the default port of the client when the connection has no port" {
+        (Get-Portal -Name "TestConnection3").Port | Should -BeExactly 5678
+    }
     It "Gets Connections filtered by name and client name that do not exist" {
         (Get-Portal -Name "*Test3" -Client "TestClient") | Should -BeNullOrEmpty
     }

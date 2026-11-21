@@ -69,7 +69,7 @@ function Get-Portal {
             $Connections += [PSCustomObject] @{
                 Name          = $c.Name
                 Hostname      = $c.Hostname
-                Port          = if ($c.IsDefaultPort) {
+                Port          = if ($c.IsDefaultPort()) {
                     $Inventory.GetClient($c.DefaultClient).DefaultPort
                 }
                 else {
