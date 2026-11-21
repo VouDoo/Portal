@@ -49,25 +49,67 @@ class Client : Item {
         return $TokenizedArgs -match [Client]::UserToken
     }
 
-    [string] GenerateArgs(
+    hidden static [string[]] SplitArgs([string] $ArgumentLine) {
+        # Splits an argument line on whitespace. Single or double quotes group
+        # several words into one argument (the quotes themselves are removed).
+        $Arguments = [System.Collections.Generic.List[string]]::new()
+        $Current = [System.Text.StringBuilder]::new()
+        $InArgument = $false
+        $Quote = [char] 0
+        foreach ($Char in $ArgumentLine.ToCharArray()) {
+            if ($Quote) {
+                if ($Char -eq $Quote) { $Quote = [char] 0 }
+                else { [void] $Current.Append($Char) }
+            }
+            elseif ($Char -eq '"' -or $Char -eq "'") {
+                $Quote = $Char
+                $InArgument = $true
+            }
+            elseif ([char]::IsWhiteSpace($Char)) {
+                if ($InArgument) {
+                    $Arguments.Add($Current.ToString())
+                    [void] $Current.Clear()
+                    $InArgument = $false
+                }
+            }
+            else {
+                [void] $Current.Append($Char)
+                $InArgument = $true
+            }
+        }
+        if ($Quote) {
+            throw "The argument line contains an unclosed quote."
+        }
+        if ($InArgument) {
+            $Arguments.Add($Current.ToString())
+        }
+        return $Arguments.ToArray()
+    }
+
+    [string[]] GenerateArgs(
         [string] $Hostname,
         [UInt16] $Port
     ) {
-        return $this.TokenizedArgs.Replace(
-            [Client]::HostToken, $Hostname
-        ).Replace(
-            [Client]::PortToken, $Port
-        )
+        return $this.GenerateArgs($Hostname, $Port, "")
     }
 
-    [string] GenerateArgs(
+    [string[]] GenerateArgs(
         [string] $Hostname,
         [UInt16] $Port,
         [string] $User
     ) {
-        return $this.GenerateArgs($Hostname, $Port).Replace(
-            [Client]::UserToken, $User
-        )
+        # The argument line is split BEFORE the tokens are replaced, so the
+        # values (host, port, user) always stay inside their own argument and
+        # are never interpreted by a shell.
+        return [Client]::SplitArgs($this.TokenizedArgs) | ForEach-Object -Process {
+            $_.Replace(
+                [Client]::HostToken, $Hostname
+            ).Replace(
+                [Client]::PortToken, $Port
+            ).Replace(
+                [Client]::UserToken, $User
+            )
+        }
     }
 
     [string] ToString() {

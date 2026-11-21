@@ -103,6 +103,79 @@ Describe "Get-Portal" {
         (Get-Portal -Name "*Test2" -Hostname "do.not.exist") | Should -BeNullOrEmpty
     }
 }
+Describe "Open-Portal" {
+    BeforeAll {
+        # Client running a script that writes each argument it receives on its own line.
+        # The script lives in a directory with a space to check that quoted arguments stay intact.
+        $ScriptDirectory = Join-Path -Path $TestDrive -ChildPath "echo args"
+        New-Item -Path $ScriptDirectory -ItemType Directory | Out-Null
+        $EchoScript = Join-Path -Path $ScriptDirectory -ChildPath "echo-args.ps1"
+        Set-Content -Path $EchoScript -Value '$args | ForEach-Object -Process { $_ }'
+        $Pwsh = (Get-Process -Id $PID).Path
+
+        Add-PortalClient -Name "EchoClient" -Executable $Pwsh -DefaultPort 4242 -Arguments (
+            "-NoProfile -File `"{0}`" <host> <port> <user>" -f $EchoScript
+        )
+        Add-Portal -Name "EchoConnection" -Hostname "echo.test" -DefaultClient "EchoClient" -DefaultUser "alice"
+        Add-Portal -Name "EchoConnectionNoUser" -Hostname "echo.test" -Port 2222 -DefaultClient "EchoClient"
+    }
+    It "Opens a connection with the default user and the default port of the client" {
+        Open-Portal -Name "EchoConnection" | Should -Be @("echo.test", "4242", "alice")
+    }
+    It "Opens a connection with a specified user and the port of the connection" {
+        Open-Portal -Name "EchoConnectionNoUser" -User "bob" | Should -Be @("echo.test", "2222", "bob")
+    }
+    It "Opens a connection without a user when the client requires one, and fails" {
+        { Open-Portal -Name "EchoConnectionNoUser" } | Should -Throw -ExpectedMessage "*A user must be specified*"
+    }
+    It "Keeps a user containing spaces and shell characters as a single argument" {
+        $User = 'bob; Write-Output INJECTED'
+        Open-Portal -Name "EchoConnection" -User $User | Should -Be @("echo.test", "4242", $User)
+    }
+    It "Does not open the connection with -WhatIf" {
+        Open-Portal -Name "EchoConnection" -WhatIf | Should -BeNullOrEmpty
+    }
+}
+Describe "Open-Portal in the External scope" {
+    BeforeAll {
+        # Client started as an independent process, writing the arguments it receives to a file
+        $ScriptDirectory = Join-Path -Path $TestDrive -ChildPath "record args"
+        New-Item -Path $ScriptDirectory -ItemType Directory | Out-Null
+        $RecordScript = Join-Path -Path $ScriptDirectory -ChildPath "record-args.ps1"
+        $RecordFile = Join-Path -Path $ScriptDirectory -ChildPath "args.txt"
+        Set-Content -Path $RecordScript -Value (
+            'Set-Content -Path "{0}.tmp" -Value $args; Move-Item -Path "{0}.tmp" -Destination "{0}"' -f $RecordFile
+        )
+        $Pwsh = (Get-Process -Id $PID).Path
+
+        Add-PortalClient -Name "RecordClient" -Executable $Pwsh -DefaultPort 4242 -DefaultScope External -Arguments (
+            "-NoProfile -NonInteractive -File `"{0}`" <host> <port> <user>" -f $RecordScript
+        )
+        Add-Portal -Name "RecordConnection" -Hostname "record.test" -DefaultClient "RecordClient"
+
+        function Get-RecordedArgs {
+            # Waits for the independent process to write the file
+            $Deadline = (Get-Date).AddSeconds(30)
+            while (-not (Test-Path -Path $RecordFile) -and (Get-Date) -lt $Deadline) {
+                Start-Sleep -Milliseconds 200
+            }
+            Get-Content -Path $RecordFile
+        }
+    }
+    BeforeEach {
+        Remove-Item -Path $RecordFile -ErrorAction SilentlyContinue
+    }
+    It "Passes the user <User> as a single argument" -ForEach @(
+        @{ User = "alice" }
+        @{ User = "my user" }
+        @{ User = 'C:\my dir\' }
+        @{ User = 'bob "the builder"' }
+        @{ User = 'bob; Write-Output INJECTED' }
+    ) {
+        Open-Portal -Name "RecordConnection" -User $User
+        Get-RecordedArgs | Should -Be @("record.test", "4242", $User)
+    }
+}
 Describe "Remove-Portal" {
     It "Removes an existing connection" {
         Remove-Portal -Name "TestConnection1" | Should -BeNullOrEmpty

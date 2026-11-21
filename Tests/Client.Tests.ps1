@@ -130,3 +130,22 @@ Describe "Rename-PortalClient" {
         | Should -Throw -ExpectedMessage "The two names are similar."
     }
 }
+Describe "Client argument line" {
+    It "Splits <ArgumentLine>" -ForEach @(
+        @{ ArgumentLine = "-p <port> <host>"; Expected = @("-p", "<port>", "<host>") }
+        @{ ArgumentLine = "  -p   <port>  "; Expected = @("-p", "<port>") }
+        @{ ArgumentLine = '-i "C:\my keys\id" <host>'; Expected = @("-i", "C:\my keys\id", "<host>") }
+        @{ ArgumentLine = "-i '/my keys/id' <host>"; Expected = @("-i", "/my keys/id", "<host>") }
+        @{ ArgumentLine = '--title="My server" <host>'; Expected = @("--title=My server", "<host>") }
+        @{ ArgumentLine = '-o "" <host>'; Expected = @("-o", "", "<host>") }
+        @{ ArgumentLine = "-m `"it's`" <host>"; Expected = @("-m", "it's", "<host>") }
+    ) {
+        InModuleScope -ModuleName Portal -Parameters @{ ArgumentLine = $ArgumentLine } {
+            [Client]::SplitArgs($ArgumentLine)
+        } | Should -Be $Expected
+    }
+    It "Fails with an unclosed quote" {
+        { InModuleScope -ModuleName Portal { [Client]::SplitArgs('-i "C:\my keys <host>') } }
+        | Should -Throw -ExpectedMessage "*unclosed quote*"
+    }
+}

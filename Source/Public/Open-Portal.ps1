@@ -142,7 +142,19 @@ function Open-Portal {
                 $Invocation.Port
             )
         }
-        $Invocation.Command = "{0} {1}" -f $Invocation.Executable, $Invocation.Arguments
+        # Single string of arguments, quoted where needed: used for display and by Start-Process,
+        # which joins array arguments with spaces without quoting them.
+        # Quoting follows the Windows rules (also used by .NET on Linux and macOS):
+        # backslashes are doubled only when they precede a double quote.
+        $Invocation.ArgumentLine = ($Invocation.Arguments | ForEach-Object -Process {
+                if ($_ -eq "" -or $_ -match '[\s"]') {
+                    '"{0}"' -f ($_ -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1')
+                }
+                else {
+                    $_
+                }
+            }) -join " "
+        $Invocation.Command = "{0} {1}" -f $Invocation.Executable, $Invocation.ArgumentLine
         Write-Debug -Message ("Open connection with command `"{0}`"" -f $Invocation.Command)
 
         $Invocation.Scope = if ($Scope) {
@@ -156,10 +168,10 @@ function Open-Portal {
         if ($PSCmdlet.ShouldProcess($Invocation.Connection.ToString(), "Initiate connection")) {
             switch ($Invocation.Scope) {
                 ([Scopes]::Console) {
-                    Invoke-Expression -Command $Invocation.Command
+                    & $Invocation.Executable @($Invocation.Arguments)
                 }
                 ([Scopes]::External) {
-                    Start-Process -FilePath $Invocation.Executable -ArgumentList $Invocation.Arguments
+                    Start-Process -FilePath $Invocation.Executable -ArgumentList $Invocation.ArgumentLine
                 }
                 ([Scopes]::Undefined) {
                     Write-Error -Message "Cannot open connection: Scope is undefined."

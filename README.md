@@ -149,6 +149,7 @@ Find examples [here](examples/clients.md).
 The `-Arguments` parameter takes a tokenized string which represents the arguments passed to the executable.
 
 _Some tokens must be present in this string._
+_Arguments are separated by spaces. Use quotes to keep several words in one argument (e.g. `-i "~/my keys/id_ed25519"`). The string is not interpreted by PowerShell, so variables like `$env:USERNAME` are not expanded._
 
 | Token    | Required | Description |
 |:--------:|:--------:| :---------- |
