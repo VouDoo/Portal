@@ -6,15 +6,40 @@ All notable changes to Portal is documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Support for Linux and macOS
+  - The default inventory file is stored in the usual settings directory of the OS:
+    `%APPDATA%\Portal` on Windows (unchanged),
+    `$XDG_CONFIG_HOME/portal` (or `~/.config/portal`) on Linux,
+    `~/Library/Application Support/Portal` on macOS
+  - Default clients match the OS: OpenSSH (`ssh` from PATH) on Linux and macOS, and FreeRDP (`xfreerdp3`) on Linux
+  - `Set-PortalInventory -Target User` sets the path for the current session and explains how to persist it in the PowerShell profile, as user environment variables cannot be persisted outside Windows
+- Quotes in the `Arguments` of a client group several words into one argument
+
+### Changed
+
+- `Open-Portal` does not use `Invoke-Expression` anymore:
+  the arguments of a client are not interpreted by PowerShell, so variables such as `$env:USERNAME` are not expanded
+
+### Fixed
+
+- `Get-Portal` showed the default port of the client instead of the port of the connection
+- `Open-Portal` allowed command injection through values such as the user (Console scope)
+- `Open-Portal` failed with executable paths containing spaces (Console scope)
+- `Open-Portal` split arguments containing spaces, such as the user (External scope)
+
 ## [0.4.1]
 
-## Fixed
+### Fixed
 
 - Fix missing parent directory error when creating the inventory file.
 
 ## [0.4.0]
 
-## Changed
+### Changed
 
 - Rebrand to "Portal"
   - Cmdlet `Add-MyRMConnection` renamed to `Add-Portal`
@@ -36,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.3]
 
-## Fixed
+### Fixed
 
 - Bug in `Invoke-MyRMConnection`: null-valued client when the default client does not exist for a connection
 
