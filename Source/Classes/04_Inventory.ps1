@@ -138,7 +138,7 @@ class Inventory {
             $Items.Connections += $Connection
         }
 
-        $Json = ConvertTo-Json -InputObject $Items -Depth 3
+        $Json = ConvertTo-Json -InputObject $Items -Depth 3 -EnumsAsStrings
 
         if (Test-Path -Path $this.Path -PathType Leaf) {
             $BackupPath = "{0}.backup" -f $this.Path

@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Open-Portal` does not use `Invoke-Expression` anymore:
   the arguments of a client are not interpreted by PowerShell, so variables such as `$env:USERNAME` are not expanded
+- The inventory file stores the scope of a client by name (e.g. `"Console"`) instead of a number, and keeps the properties in a fixed order.
+  Inventory files written by older versions are still supported
 
 ### Fixed
 

@@ -149,3 +149,17 @@ Describe "Client argument line" {
         | Should -Throw -ExpectedMessage "*unclosed quote*"
     }
 }
+Describe "Client scope in the inventory file" {
+    It "Writes the scope name in the inventory file" {
+        Add-PortalClient -Name "ScopeClient" -Executable "client.exe" -Arguments "<host> <port>" -DefaultPort 1 -DefaultScope External
+        $Client = (Get-Content -Path $env:PORTAL_INVENTORY -Raw | ConvertFrom-Json).Clients
+        | Where-Object -Property Name -EQ "ScopeClient"
+        $Client.DefaultScope | Should -BeExactly "External"
+    }
+    It "Reads a scope written as a number (older inventory files)" {
+        $Inventory = Get-Content -Path $env:PORTAL_INVENTORY -Raw | ConvertFrom-Json
+        ($Inventory.Clients | Where-Object -Property Name -EQ "ScopeClient").DefaultScope = 2
+        $Inventory | ConvertTo-Json -Depth 3 | Set-Content -Path $env:PORTAL_INVENTORY
+        (Get-PortalClient -Name "ScopeClient").DefaultScope | Should -Be "Console"
+    }
+}
