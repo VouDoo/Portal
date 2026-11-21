@@ -13,7 +13,7 @@ Removes Portal client.
 ## SYNTAX
 
 ```
-Remove-PortalClient [-Name] <String> [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+Remove-PortalClient [-Name] <String> [-Force] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -32,6 +32,11 @@ Remove-PortalClient SSH
 Remove-PortalClient -Name SSH
 ```
 
+### EXAMPLE 3
+```
+Remove-PortalClient -Name SSH -Force
+```
+
 ## PARAMETERS
 
 ### -Name
@@ -45,6 +50,22 @@ Aliases:
 Required: True
 Position: 1
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Removes the client even if it is the default client of some connections.
+These connections must then be opened with another client (Open-Portal -Client).
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

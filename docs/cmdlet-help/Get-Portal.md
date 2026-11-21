@@ -19,7 +19,7 @@ Get-Portal [[-Name] <String>] [[-Hostname] <String>] [[-Client] <String>] [-Prog
 
 ## DESCRIPTION
 Gets available connections from the Portal inventory file.
-connections can be filtered by their name and/or client name.
+Connections can be filtered by their name, hostname and/or default client.
 
 ## EXAMPLES
 
@@ -53,7 +53,7 @@ Accept wildcard characters: False
 ```
 
 ### -Hostname
-Filter by hostname.
+Filters connections by hostname.
 
 ```yaml
 Type: String
@@ -68,7 +68,7 @@ Accept wildcard characters: False
 ```
 
 ### -Client
-Filter by client name.
+Filters connections by default client name.
 
 ```yaml
 Type: String

@@ -15,8 +15,8 @@ function Set-PortalInventory {
 
     .PARAMETER Target
     Target scope where the environment variable will be saved.
-    "User" can only be persisted on Windows. On other OSes, the variable is set
-    for the current session and a warning explains how to persist it in your profile.
+    "User" can only be persisted on Windows.
+    On other OSes, the variable is set for the current session and a warning explains how to persist it in your profile.
 
     .INPUTS
     None. You cannot pipe objects to Set-PortalInventory.

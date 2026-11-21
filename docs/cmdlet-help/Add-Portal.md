@@ -102,7 +102,7 @@ Accept wildcard characters: False
 ```
 
 ### -DefaultUser
-Default client to use to connect to the remote host.
+Default user to connect with, if the client requires a user.
 
 ```yaml
 Type: String

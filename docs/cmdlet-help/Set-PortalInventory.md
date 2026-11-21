@@ -36,6 +36,8 @@ Set-PortalInventory -Path C:\MyCustomInventory.json
 
 ### -Path
 Path to the inventory file.
+This path is set in an environment variable.
+Pass an empty string or null to reset to the default path.
 
 ```yaml
 Type: String
@@ -51,6 +53,8 @@ Accept wildcard characters: False
 
 ### -Target
 Target scope where the environment variable will be saved.
+"User" can only be persisted on Windows.
+On other OSes, the variable is set for the current session and a warning explains how to persist it in your profile.
 
 ```yaml
 Type: String
