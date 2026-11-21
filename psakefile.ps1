@@ -118,29 +118,29 @@ Task Analyze -depends Build {
 
 Task Pester -depends Build {
     # Import module
-    if (-not (Get-Module Pester -ListAvailable)) {
-        "[{0}][import] Pester module is not installed. Skipping task." -f $psake.context.currentTaskName
+    if (-not (Get-Module Pester -ListAvailable | Where-Object -Property Version -GE "5.0.0")) {
+        "[{0}][import] Pester 5 or later is not installed. Skipping task." -f $psake.context.currentTaskName
         return
     }
-    Import-Module Pester
+    Import-Module Pester -MinimumVersion 5.0.0
 
-    # Set Pester parameters
+    # The tests import the built module from this path
     $env:PESTER_FILE_TO_TEST = $Settings.OutModule
-    $PesterParams = @{
-        Path     = $Settings.TestsFiles
-        Output   = "Detailed"
-        Verbose  = $VerbosePreference
-        PassThru = $true
-    }
+
+    # Set Pester configuration
+    $PesterConfiguration = New-PesterConfiguration
+    $PesterConfiguration.Run.Path = $Settings.Tests
+    $PesterConfiguration.Run.PassThru = $true
+    $PesterConfiguration.Output.Verbosity = "Detailed"
 
     # Run Pester
-    $Result = Invoke-Pester @PesterParams
+    $Result = Invoke-Pester -Configuration $PesterConfiguration
 
     # Assertions
     Assert -conditionToCheck (
         $Result.FailedCount -eq 0
     ) -failureMessage (
-        "[{0}][result] One or more tests failed." -f $psake.context.currentTaskName
+        "[{0}][result] {1} test(s) failed." -f $psake.context.currentTaskName, $Result.FailedCount
     )
 } -description "Run Pester tests"
 

@@ -27,7 +27,6 @@ $Docs = Join-Path -Path $ProjectRoot -ChildPath "docs"
     SourceManifest              = Join-Path -Path $Source -ChildPath "$ModuleName.psd1"
     # Tests
     Tests                       = $Tests
-    TestsFiles                  = Get-ChildItem -Path $Tests -Include "*.Tests.ps1" -Recurse -File
     TestsScriptAnalyzerSettings = Join-Path -Path $Tests -ChildPath "PSScriptAnalyzerSettings.psd1"
     TestOut                     = Join-Path -Path $Tests -ChildPath "TestResults.xml"
     # Out
