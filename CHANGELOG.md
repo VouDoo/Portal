@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Hostnames may contain underscores (e.g. `host_name.local`)
+- The inventory file is saved atomically: it is written to a temporary file, then moved over the inventory file, so it is never left partially written
 
 ### Fixed
 

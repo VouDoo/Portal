@@ -25,6 +25,25 @@ Describe "New-PortalInventory" {
         $PSObject.ContainsKey("Foo") | Should -BeFalse
     }
 }
+Describe "Saving the inventory" {
+    BeforeAll {
+        $env:PORTAL_INVENTORY = Join-Path -Path $TestDrive -ChildPath "save/inventory.json"
+        New-PortalInventory -NoDefaultClients
+        Add-PortalClient -Name "SaveClient" -Executable "client" -Arguments "<host> <port>" -DefaultPort 22
+    }
+    It "Replaces the inventory file without leaving temporary files" {
+        Add-Portal -Name "SaveConnection" -Hostname "save.test" -DefaultClient "SaveClient"
+        $Directory = Split-Path -Path $env:PORTAL_INVENTORY -Parent
+        Get-ChildItem -Path $Directory -Filter "*.tmp" | Should -BeNullOrEmpty
+        $Json = Get-Content -Path $env:PORTAL_INVENTORY -Raw | ConvertFrom-Json -AsHashtable
+        $Json.Connections.Name | Should -Be @("SaveConnection")
+    }
+    It "Keeps the previous inventory in the backup file" {
+        $Backup = Get-Content -Path ($env:PORTAL_INVENTORY + ".backup") -Raw | ConvertFrom-Json -AsHashtable
+        $Backup.Clients.Name | Should -Be @("SaveClient")
+        $Backup.Connections | Should -BeNullOrEmpty
+    }
+}
 Describe "Get-PortalInventory" {
     BeforeAll {
         New-PortalInventory -Force
