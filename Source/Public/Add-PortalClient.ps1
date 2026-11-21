@@ -42,7 +42,7 @@ function Add-PortalClient {
 
     #>
 
-    [OutputType([string])]
+    [OutputType([void])]
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
         [Parameter(

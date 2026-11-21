@@ -44,7 +44,7 @@ function New-PortalInventory {
 
     #>
 
-    [OutputType([void])]
+    [OutputType([void], [string])]
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
         [Parameter(

@@ -22,7 +22,7 @@ function Add-Portal {
     Name of the default client.
 
     .PARAMETER DefaultUser
-    Default client to use to connect to the remote host.
+    Default user to connect with, if the client requires a user.
 
     .PARAMETER Description
     Short description for the connection.
@@ -44,7 +44,7 @@ function Add-Portal {
 
     #>
 
-    [OutputType([string])]
+    [OutputType([void])]
     [CmdletBinding(SupportsShouldProcess = $true)]
     param (
         [Parameter(

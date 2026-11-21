@@ -7,10 +7,16 @@ function Get-Portal {
 
     .DESCRIPTION
     Gets available connections from the Portal inventory file.
-    connections can be filtered by their name and/or client name.
+    Connections can be filtered by their name, hostname and/or default client.
 
     .PARAMETER Name
     Filters connections by name.
+
+    .PARAMETER Hostname
+    Filters connections by hostname.
+
+    .PARAMETER Client
+    Filters connections by default client name.
 
     .INPUTS
     None. You cannot pipe objects to Get-Portal.

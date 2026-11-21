@@ -177,7 +177,7 @@ _Arguments are separated by spaces. Use quotes to keep several words in one argu
 | `<port>` | Yes      | Port to connect to on the remote host. |
 | `<user>` | No       | Name of the user to log in with.</br>If set, `Open-Portal` will ask for a username at each execution. |
 
-The `-Scope` parameter defines in which scope a connection will be opened by default.
+The `-DefaultScope` parameter defines in which scope a connection will be opened by default.
 
 | Scope       | Description |
 |:-----------:| :---------- |
