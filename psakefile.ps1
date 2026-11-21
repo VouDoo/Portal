@@ -202,19 +202,13 @@ Task BuildHelp -depends platyPS -description "Build help files"
 Task Publish -depends Test {
     # Get API key from environment variable
     $ApiKey = [System.Environment]::GetEnvironmentVariable($Settings.PublishApiKeyEnvVar)
-    if (-not $ApiKey) {
-        "[{0}][apikey] No API key found from environment variable `"{1}`". Skipping task." -f (
+    Assert -conditionToCheck (
+        [bool] $ApiKey
+    ) -failureMessage (
+        "[{0}][apikey] No API key found from environment variable `"{1}`"." -f (
             $psake.context.currentTaskName, $Settings.PublishApiKeyEnvVar
         )
-        return
-    }
-
-    # Set Publish parameters
-    $PublishParams = @{
-        Path        = $Settings.Out
-        NuGetApiKey = $ApiKey
-        Repository  = $Settings.PublishRepository
-    }
+    )
 
     # Publish module
     "[{0}][module] Publish {1} module in {2}." -f (
@@ -222,5 +216,12 @@ Task Publish -depends Test {
         $Settings.ModuleName,
         $Settings.PublishRepository
     )
-    Publish-Module @PublishParams
+    if (Get-Command -Name Publish-PSResource -ErrorAction SilentlyContinue) {
+        # PSResourceGet (PowerShell 7.4 and later), which does not require the .NET SDK
+        Publish-PSResource -Path $Settings.Out -ApiKey $ApiKey -Repository $Settings.PublishRepository
+    }
+    else {
+        # PowerShellGet, which requires the .NET SDK on Linux and macOS
+        Publish-Module -Path $Settings.Out -NuGetApiKey $ApiKey -Repository $Settings.PublishRepository
+    }
 } -description "Publish module to a defined PowerShell repository"
