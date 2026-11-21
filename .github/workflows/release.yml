@@ -1,0 +1,120 @@
+name: Release
+
+# Runs when a version tag is pushed (e.g. "v0.5.2").
+# Releasing is: merge the version bump PR, then push a signed tag on main:
+#   git tag -a v0.5.2 -m v0.5.2 && git push origin v0.5.2
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Test
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Publish ${{ github.ref_name }}
+    needs: test
+    runs-on: ubuntu-latest
+    # The PORTAL_PSGALLERY_API_KEY secret is stored in this environment,
+    # which requires an approval before the job starts
+    environment:
+      name: release
+      url: https://www.powershellgallery.com/packages/Portal/${{ steps.version.outputs.version }}
+    permissions:
+      contents: write # create the GitHub release
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # to check that the tag is on main
+
+      - name: Check the tag
+        id: version
+        run: |
+          $Version = (Import-PowerShellDataFile -Path Source/Portal.psd1).ModuleVersion
+          $Tag = "${{ github.ref_name }}"
+          if ($Tag -ne "v$Version") {
+              throw "Tag `"$Tag`" does not match the module version `"$Version`" (Source/Portal.psd1)."
+          }
+          git merge-base --is-ancestor "$env:GITHUB_SHA" origin/main
+          if ($LASTEXITCODE -ne 0) {
+              throw "Tag `"$Tag`" is not on the main branch."
+          }
+          "version=$Version" >> $env:GITHUB_OUTPUT
+
+      - name: Write release notes from CHANGELOG.md
+        run: |
+          $Version = "${{ steps.version.outputs.version }}"
+          $Section = [System.Collections.Generic.List[string]]::new()
+          $InSection = $false
+          foreach ($Line in Get-Content -Path CHANGELOG.md) {
+              if ($Line -match '^## \[(.+)\]') {
+                  if ($InSection) { break }
+                  $InSection = $Matches[1] -eq $Version
+                  continue
+              }
+              if ($InSection) { $Section.Add($Line) }
+          }
+          $Body = ($Section -join "`n").Trim()
+          if (-not $Body) {
+              throw "No section `"## [$Version]`" found in CHANGELOG.md."
+          }
+          @(
+              "Available on PS Gallery: https://www.powershellgallery.com/packages/Portal/$Version"
+              ""
+              $Body
+              ""
+              "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md) for details."
+          ) | Set-Content -Path "$env:RUNNER_TEMP/notes.md"
+
+      - name: Build
+        run: ./build.ps1 -Bootstrap Build
+
+      - name: Publish to PowerShell Gallery
+        env:
+          PORTAL_PSGALLERY_API_KEY: ${{ secrets.PORTAL_PSGALLERY_API_KEY }}
+        run: |
+          # Skipped if this version is already published (e.g. when the job is re-run
+          # after a failure of the next step), as a version cannot be published twice
+          $Published = Find-PSResource -Name Portal -Version "${{ steps.version.outputs.version }}" -Repository PSGallery -ErrorAction SilentlyContinue
+          if ($Published) {
+              "Portal ${{ steps.version.outputs.version }} is already on PowerShell Gallery."
+          }
+          else {
+              ./build.ps1 Publish
+          }
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $Version = "${{ steps.version.outputs.version }}"
+          $Zip = Join-Path -Path $env:RUNNER_TEMP -ChildPath Portal.zip
+          Push-Location -Path Out
+          try {
+              # Same layout as the previous releases: Portal/<version>/...
+              zip -qr $Zip "Portal/$Version"
+          }
+          finally {
+              Pop-Location
+          }
+          gh release view "${{ github.ref_name }}" *> $null
+          if ($LASTEXITCODE -eq 0) {
+              gh release upload "${{ github.ref_name }}" $Zip --clobber
+          }
+          else {
+              gh release create "${{ github.ref_name }}" $Zip --verify-tag --latest `
+                  --title "${{ github.ref_name }}" --notes-file "$env:RUNNER_TEMP/notes.md"
+          }
+          if ($LASTEXITCODE -ne 0) { throw "Cannot create the GitHub release." }
