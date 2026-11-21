@@ -33,7 +33,7 @@ function Rename-PortalClient {
             Mandatory = $true,
             HelpMessage = "Name of the client to rename."
         )]
-        [ValidateSet([ValidateSetClientName])]
+        [ArgumentCompleter([ClientNameCompleter])]
         [ValidateClientName()]
         [string] $Name,
 

@@ -35,7 +35,7 @@ function Test-Portal {
             Mandatory = $true,
             HelpMessage = "Name of the connection."
         )]
-        [ValidateSet([ValidateSetConnectionName])]
+        [ArgumentCompleter([ConnectionNameCompleter])]
         [ValidateConnectionName()]
         [string] $Name
     )

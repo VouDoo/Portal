@@ -33,7 +33,7 @@ function Rename-Portal {
             Mandatory = $true,
             HelpMessage = "Name of the connection to rename."
         )]
-        [ValidateSet([ValidateSetConnectionName])]
+        [ArgumentCompleter([ConnectionNameCompleter])]
         [ValidateConnectionName()]
         [string] $Name,
 

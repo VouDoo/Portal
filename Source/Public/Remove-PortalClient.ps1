@@ -40,7 +40,7 @@ function Remove-PortalClient {
             Mandatory = $true,
             HelpMessage = "Name of the client."
         )]
-        [ValidateSet([ValidateSetClientName])]
+        [ArgumentCompleter([ClientNameCompleter])]
         [ValidateClientName()]
         [string] $Name,
 

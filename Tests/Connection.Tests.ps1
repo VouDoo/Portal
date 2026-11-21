@@ -135,6 +135,18 @@ Describe "Open-Portal" {
     It "Does not open the connection with -WhatIf" {
         Open-Portal -Name "EchoConnection" -WhatIf | Should -BeNullOrEmpty
     }
+    It "Opens a connection that does not exist, and fails" {
+        { Open-Portal -Name "MissingConnection" } | Should -Throw -ExpectedMessage "*Connection `"MissingConnection`" does not exist*"
+    }
+    It "Completes connection names with <InputScript>" -ForEach @(
+        @{ InputScript = "Open-Portal EchoConn"; Expected = @("EchoConnection", "EchoConnectionNoUser") }
+        @{ InputScript = "Open-Portal -Name EchoConnectionN"; Expected = @("EchoConnectionNoUser") }
+        @{ InputScript = "Open-Portal EchoConnection -Client EchoC"; Expected = @("EchoClient") }
+        @{ InputScript = "Open-Portal Nothing"; Expected = @() }
+    ) {
+        $Completion = TabExpansion2 -inputScript $InputScript -cursorColumn $InputScript.Length
+        @($Completion.CompletionMatches.CompletionText) | Should -Be $Expected
+    }
 }
 Describe "Open-Portal in the External scope" {
     BeforeAll {

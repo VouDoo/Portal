@@ -70,7 +70,7 @@ function Add-Portal {
             Mandatory = $true,
             HelpMessage = "Default client to use to connect to the remote host."
         )]
-        [ValidateSet([ValidateSetClientName])]
+        [ArgumentCompleter([ClientNameCompleter])]
         [ValidateClientName()]
         [string] $DefaultClient,
 

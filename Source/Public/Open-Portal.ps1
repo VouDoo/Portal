@@ -42,14 +42,14 @@ function Open-Portal {
             Mandatory = $true,
             HelpMessage = "Name of the connection."
         )]
-        [ValidateSet([ValidateSetConnectionName])]
+        [ArgumentCompleter([ConnectionNameCompleter])]
         [ValidateConnectionName()]
         [string] $Name,
 
         [Parameter(
             HelpMessage = "Name of the client to use to initiate the connection."
         )]
-        [ValidateSet([ValidateSetClientName])]
+        [ArgumentCompleter([ClientNameCompleter])]
         [ValidateClientName()]
         [Alias("c")]
         [string] $Client,
