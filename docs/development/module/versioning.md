@@ -10,22 +10,14 @@ In the examples, this is represented by `M.m.p`.
 ## How to bump the module version
 
 To bump the version number of the module,
-edit the following files:
+edit `ModuleVersion` in the module manifest `Source\Portal.psd1`:
 
-- Module manifest `Source\Portal.psd1`, edit `ModuleVersion`:
-
-   ```powershell
-   @{
-       # ...
-       ModuleVersion = 'M.m.p'
-       # ...
-   }
-   ```
-
-- Build settings `build.settings.ps1`, edit `ModuleVersion`:
-
-   ```powershell
+```powershell
+@{
     # ...
-    $ModuleVersion = "M.m.p"
+    ModuleVersion = 'M.m.p'
     # ...
-   ```
+}
+```
+
+The build (`build.settings.ps1`) reads the version from this file.

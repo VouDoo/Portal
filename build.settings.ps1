@@ -1,9 +1,11 @@
 $ProjectRoot = $PSScriptRoot
 
 $ModuleName = "Portal"
-$ModuleVersion = "0.4.1"
 
 $Source = Join-Path -Path $ProjectRoot -ChildPath "Source"
+
+# The module version is defined in the source manifest only
+$ModuleVersion = (Import-PowerShellDataFile -Path (Join-Path -Path $Source -ChildPath "$ModuleName.psd1")).ModuleVersion
 $Tests = Join-Path -Path $ProjectRoot -ChildPath "Tests"
 $Out = Join-Path -Path $ProjectRoot -ChildPath "Out\$ModuleName\$ModuleVersion"
 $Docs = Join-Path -Path $ProjectRoot -ChildPath "docs"
