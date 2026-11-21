@@ -1,6 +1,6 @@
 class ConnectionNameCompleter : IArgumentCompleter {
     # Completes connection names from the inventory (TAB key).
-    # Validation is done by ValidateConnectionName, so this only runs on completion.
+    # Names are checked by the commands themselves, so this only runs on completion.
     [System.Collections.Generic.IEnumerable[CompletionResult]] CompleteArgument(
         [string] $CommandName,
         [string] $ParameterName,

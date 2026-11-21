@@ -71,7 +71,6 @@ function Add-Portal {
             HelpMessage = "Default client to use to connect to the remote host."
         )]
         [ArgumentCompleter([ClientNameCompleter])]
-        [ValidateClientName()]
         [string] $DefaultClient,
 
         [Parameter(
@@ -97,6 +96,13 @@ function Add-Portal {
             Write-Error -Message (
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
+        }
+
+        try {
+            $Inventory.AssertClientExists($DefaultClient)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message
         }
 
         try {

@@ -6,6 +6,21 @@ All notable changes to Portal is documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Hostnames may contain underscores (e.g. `host_name.local`)
+- The inventory file is saved atomically: it is written to a temporary file, then moved over the inventory file, so it is never left partially written
+- Commands read the inventory file once, instead of once more for each client or connection name given as a parameter
+
+### Fixed
+
+- IPv6 addresses (e.g. `::1`, `fe80::1`, `2001:db8::10`) are accepted as hostnames.
+  When a client uses `<host>:<port>`, IPv6 addresses are put in brackets (e.g. `/v:[::1]:3389`) ([#13](https://github.com/VouDoo/Portal/issues/13))
+- An invalid hostname in the inventory file does not block the whole inventory anymore:
+  it is reported with a warning, and only the commands opening or testing this connection fail ([#13](https://github.com/VouDoo/Portal/issues/13))
+
 ## [0.5.0]
 
 ### Added

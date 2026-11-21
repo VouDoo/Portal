@@ -43,14 +43,12 @@ function Open-Portal {
             HelpMessage = "Name of the connection."
         )]
         [ArgumentCompleter([ConnectionNameCompleter])]
-        [ValidateConnectionName()]
         [string] $Name,
 
         [Parameter(
             HelpMessage = "Name of the client to use to initiate the connection."
         )]
         [ArgumentCompleter([ClientNameCompleter])]
-        [ValidateClientName()]
         [Alias("c")]
         [string] $Client,
 
@@ -81,10 +79,23 @@ function Open-Portal {
             )
         }
 
+        try {
+            $Inventory.AssertConnectionExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message
+        }
+
         $Invocation = @{}
 
         $Invocation.Connection = $Inventory.GetConnection($Name)
         Write-Debug -Message ("Open connection {0}" -f $Invocation.Connection.ToString())
+
+        if (-not $Invocation.Connection.HasValidHostname()) {
+            Write-Error -Message (
+                "Cannot open connection: The hostname `"{0}`" is not valid." -f $Invocation.Connection.Hostname
+            )
+        }
 
         $Invocation.Client = if ($Client) {
             if (-not $Inventory.ClientExists($Client)) {

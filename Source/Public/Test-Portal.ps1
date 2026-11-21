@@ -36,7 +36,6 @@ function Test-Portal {
             HelpMessage = "Name of the connection."
         )]
         [ArgumentCompleter([ConnectionNameCompleter])]
-        [ValidateConnectionName()]
         [string] $Name
     )
 
@@ -44,7 +43,21 @@ function Test-Portal {
         $Inventory = Import-Inventory
         $Status = "Unknown"
 
+        try {
+            $Inventory.AssertConnectionExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message -ErrorAction Stop
+        }
+
         $Connection = $Inventory.GetConnection($Name)
+
+        if (-not $Connection.HasValidHostname()) {
+            Write-Error -Message (
+                "Cannot test connection: The hostname `"{0}`" is not valid." -f $Connection.Hostname
+            )
+            return "CriticalFailure"
+        }
 
         $Port = if ($Connection.IsDefaultPort()) {
             $Inventory.GetClient($Connection.DefaultClient).DefaultPort

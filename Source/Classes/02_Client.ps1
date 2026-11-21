@@ -101,8 +101,15 @@ class Client : Item {
         # The argument line is split BEFORE the tokens are replaced, so the
         # values (host, port, user) always stay inside their own argument and
         # are never interpreted by a shell.
+        # IPv6 addresses need brackets when they are followed by a port ("[::1]:22")
+        $HostPortToken = "{0}:{1}" -f [Client]::HostToken, [Client]::PortToken
+        $IsIPv6 = [Connection]::IsIPv6Address($Hostname)
         return [Client]::SplitArgs($this.TokenizedArgs) | ForEach-Object -Process {
-            $_.Replace(
+            $Argument = $_
+            if ($IsIPv6) {
+                $Argument = $Argument.Replace($HostPortToken, ("[{0}]:{1}" -f [Client]::HostToken, [Client]::PortToken))
+            }
+            $Argument.Replace(
                 [Client]::HostToken, $Hostname
             ).Replace(
                 [Client]::PortToken, $Port

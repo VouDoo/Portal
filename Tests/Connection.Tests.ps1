@@ -217,3 +217,73 @@ Describe "Remove-PortalClient used by connections" {
         (Get-Portal -Client "UsedClient").Name | Should -Be @("UsingConnection1", "UsingConnection2")
     }
 }
+Describe "Hostname validation" {
+    BeforeAll {
+        $ScriptDirectory = Join-Path -Path $TestDrive -ChildPath "hostname args"
+        New-Item -Path $ScriptDirectory -ItemType Directory | Out-Null
+        $EchoScript = Join-Path -Path $ScriptDirectory -ChildPath "echo-args.ps1"
+        Set-Content -Path $EchoScript -Value '$args | ForEach-Object -Process { $_ }'
+        $Pwsh = (Get-Process -Id $PID).Path
+
+        Add-PortalClient -Name "HostPortClient" -Executable $Pwsh -DefaultPort 3389 -Arguments (
+            "-NoProfile -File `"{0}`" /v:<host>:<port> <host>" -f $EchoScript
+        )
+    }
+    It "Accepts the hostname <Hostname>" -ForEach @(
+        @{ Hostname = "server" }
+        @{ Hostname = "server.example.com" }
+        @{ Hostname = "host_name.local" }
+        @{ Hostname = "192.168.1.10" }
+        @{ Hostname = "::1" }
+        @{ Hostname = "fe80::1" }
+        @{ Hostname = "2001:db8::10" }
+    ) {
+        $Name = "Valid{0}" -f ($Hostname -replace "[^a-zA-Z0-9]", "_")
+        Add-Portal -Name $Name -Hostname $Hostname -DefaultClient "HostPortClient" | Should -BeNullOrEmpty
+        (Get-Portal -Name $Name).Hostname | Should -BeExactly $Hostname
+    }
+    It "Rejects the hostname <Hostname>" -ForEach @(
+        @{ Hostname = "-oProxyCommand=evil" }
+        @{ Hostname = "host name" }
+        @{ Hostname = "host;name" }
+        @{ Hostname = "[::1]" }
+        @{ Hostname = "1:2:3" }
+        @{ Hostname = "host..example" }
+    ) {
+        { Add-Portal -Name "Invalid" -Hostname $Hostname -DefaultClient "HostPortClient" } |
+            Should -Throw -ExpectedMessage "*is not valid*"
+    }
+    It "Puts IPv6 addresses in brackets when they are followed by a port" {
+        Open-Portal -Name "Valid__1" | Should -Be @("/v:[::1]:3389", "::1")
+    }
+    It "Does not put IPv4 addresses and DNS names in brackets" {
+        Open-Portal -Name "Valid192_168_1_10" | Should -Be @("/v:192.168.1.10:3389", "192.168.1.10")
+    }
+    Context "Invalid hostname in the inventory file" {
+        BeforeAll {
+            $Json = Get-Content -Path $env:PORTAL_INVENTORY -Raw | ConvertFrom-Json -AsHashtable
+            ($Json.Connections | Where-Object -FilterScript { $_.Name -eq "Validserver" }).Hostname = "bad host"
+            $Json | ConvertTo-Json -Depth 3 | Set-Content -Path $env:PORTAL_INVENTORY
+        }
+        It "Warns about the invalid hostname but still reads the other connections" {
+            # Warnings written by the inventory class only go to the warning stream
+            $Output = Get-Portal 3>&1
+            $Warnings = $Output | Where-Object -FilterScript { $_ -is [System.Management.Automation.WarningRecord] }
+            $Connections = $Output | Where-Object -FilterScript { $_ -isnot [System.Management.Automation.WarningRecord] }
+            ($Connections | Where-Object -Property Name -EQ "Validserver_example_com") | Should -Not -BeNullOrEmpty
+            $Warnings -join "`n" | Should -BeLike "*Validserver*invalid hostname*"
+        }
+        It "Opens the other connections" {
+            Open-Portal -Name "Validhost_name_local" 3>$null |
+                Should -Be @("/v:host_name.local:3389", "host_name.local")
+        }
+        It "Does not open the connection with the invalid hostname" {
+            { Open-Portal -Name "Validserver" 3>$null } |
+                Should -Throw -ExpectedMessage "*hostname `"bad host`" is not valid*"
+        }
+        It "Keeps the invalid connection when the inventory is saved" {
+            Remove-Portal -Name "Validfe80__1" -Confirm:$false 3>$null
+            (Get-Portal -Name "Validserver" 3>$null).Hostname | Should -BeExactly "bad host"
+        }
+    }
+}

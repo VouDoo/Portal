@@ -41,7 +41,6 @@ function Remove-PortalClient {
             HelpMessage = "Name of the client."
         )]
         [ArgumentCompleter([ClientNameCompleter])]
-        [ValidateClientName()]
         [string] $Name,
 
         [Parameter(
@@ -62,6 +61,13 @@ function Remove-PortalClient {
             Write-Error -Message (
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
+        }
+
+        try {
+            $Inventory.AssertClientExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message
         }
 
         # Connections that would be left without their default client

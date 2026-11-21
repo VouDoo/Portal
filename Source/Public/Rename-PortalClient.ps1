@@ -34,7 +34,6 @@ function Rename-PortalClient {
             HelpMessage = "Name of the client to rename."
         )]
         [ArgumentCompleter([ClientNameCompleter])]
-        [ValidateClientName()]
         [string] $Name,
 
         [Parameter(
@@ -58,6 +57,13 @@ function Rename-PortalClient {
             Write-Error -Message (
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
+        }
+
+        try {
+            $Inventory.AssertClientExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message
         }
 
         if ($PSCmdlet.ShouldProcess(

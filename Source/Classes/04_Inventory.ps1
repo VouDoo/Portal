@@ -110,6 +110,17 @@ class Inventory {
             )
         }
 
+        # Report invalid hostnames, without blocking the other connections
+        foreach ($c in $this.Connections) {
+            if (-not $c.HasValidHostname()) {
+                Write-Warning -Message (
+                    "Connection `"{0}`" has an invalid hostname `"{1}`". Fix it in the inventory file: {2}" -f (
+                        $c.Name, $c.Hostname, $this.Path
+                    )
+                )
+            }
+        }
+
         # Check if Connection name duplicates exist
         if ($this.ConnectionNameDuplicatesExist()) {
             Write-Warning -Message (
@@ -140,15 +151,29 @@ class Inventory {
 
         $Json = ConvertTo-Json -InputObject $Items -Depth 3 -EnumsAsStrings
 
+        $Directory = Split-Path -Path $this.Path -Parent
+        if ($Directory -and -not (Test-Path -Path $Directory -PathType Container)) {
+            New-Item -Path $Directory -ItemType Directory -Force | Out-Null
+        }
+
         if (Test-Path -Path $this.Path -PathType Leaf) {
             $BackupPath = "{0}.backup" -f $this.Path
             Copy-Item -Path $this.Path -Destination $BackupPath -Force
         }
-        else {
-            New-Item -Path $this.Path -ItemType File -Force | Out-Null
-        }
 
-        Set-Content -Path $this.Path -Value $Json -Encoding ([Inventory]::Encoding) -Force
+        # Write to a temporary file in the same directory, then move it over the inventory file.
+        # The move is a rename on the same volume, so the inventory file is either the old one
+        # or the new one, never a partially written file (e.g. if the process is killed or the disk is full).
+        $TempPath = "{0}.{1}.tmp" -f $this.Path, [System.Guid]::NewGuid().ToString("N")
+        try {
+            Set-Content -Path $TempPath -Value $Json -Encoding ([Inventory]::Encoding) -Force -ErrorAction Stop
+            [System.IO.File]::Move($TempPath, $this.Path, $true)
+        }
+        finally {
+            if (Test-Path -Path $TempPath -PathType Leaf) {
+                Remove-Item -Path $TempPath -Force -ErrorAction SilentlyContinue
+            }
+        }
     }
 
     hidden [bool] ClientNameDuplicatesExist() {
@@ -199,6 +224,18 @@ class Inventory {
         return $this.GetConnection($Name).Count -gt 0
     }
 
+    [void] AssertClientExists([string] $Name) {
+        if (-not $this.ClientExists($Name)) {
+            throw "Client `"{0}`" does not exist." -f $Name
+        }
+    }
+
+    [void] AssertConnectionExists([string] $Name) {
+        if (-not $this.ConnectionExists($Name)) {
+            throw "Connection `"{0}`" does not exist." -f $Name
+        }
+    }
+
     [void] AddClient([Client] $Client) {
         if ($this.ClientExists($Client.Name)) {
             throw "Cannot add Client `"{0}`" as it already exists." -f $Client.Name
@@ -210,6 +247,7 @@ class Inventory {
         if ($this.ConnectionExists($Connection.Name)) {
             throw "Cannot add Connection `"{0}`" as it already exists." -f $Connection.Name
         }
+        [Connection]::ValidateHostname($Connection.Hostname)
         $this.Connections += $Connection
     }
 
