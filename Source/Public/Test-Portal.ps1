@@ -46,6 +46,13 @@ function Test-Portal {
 
         $Connection = $Inventory.GetConnection($Name)
 
+        if (-not $Connection.HasValidHostname()) {
+            Write-Error -Message (
+                "Cannot test connection: The hostname `"{0}`" is not valid." -f $Connection.Hostname
+            )
+            return "CriticalFailure"
+        }
+
         $Port = if ($Connection.IsDefaultPort()) {
             $Inventory.GetClient($Connection.DefaultClient).DefaultPort
         }

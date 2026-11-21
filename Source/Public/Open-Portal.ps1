@@ -86,6 +86,12 @@ function Open-Portal {
         $Invocation.Connection = $Inventory.GetConnection($Name)
         Write-Debug -Message ("Open connection {0}" -f $Invocation.Connection.ToString())
 
+        if (-not $Invocation.Connection.HasValidHostname()) {
+            Write-Error -Message (
+                "Cannot open connection: The hostname `"{0}`" is not valid." -f $Invocation.Connection.Hostname
+            )
+        }
+
         $Invocation.Client = if ($Client) {
             if (-not $Inventory.ClientExists($Client)) {
                 Write-Error -Message (

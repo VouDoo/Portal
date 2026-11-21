@@ -110,6 +110,17 @@ class Inventory {
             )
         }
 
+        # Report invalid hostnames, without blocking the other connections
+        foreach ($c in $this.Connections) {
+            if (-not $c.HasValidHostname()) {
+                Write-Warning -Message (
+                    "Connection `"{0}`" has an invalid hostname `"{1}`". Fix it in the inventory file: {2}" -f (
+                        $c.Name, $c.Hostname, $this.Path
+                    )
+                )
+            }
+        }
+
         # Check if Connection name duplicates exist
         if ($this.ConnectionNameDuplicatesExist()) {
             Write-Warning -Message (
@@ -210,6 +221,7 @@ class Inventory {
         if ($this.ConnectionExists($Connection.Name)) {
             throw "Cannot add Connection `"{0}`" as it already exists." -f $Connection.Name
         }
+        [Connection]::ValidateHostname($Connection.Hostname)
         $this.Connections += $Connection
     }
 
