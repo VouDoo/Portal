@@ -25,12 +25,19 @@ $ErrorActionPreference = "Stop"
 $RequirementsFile = Join-Path -Path $PSScriptRoot -ChildPath requirements.psd1
 if ($Bootstrap.IsPresent) {
     Get-PackageProvider -Name Nuget -ForceBootstrap | Out-Null
+    # Trust PSGallery only while installing the dependencies, then restore the previous policy
+    $PreviousInstallationPolicy = (Get-PSRepository -Name PSGallery).InstallationPolicy
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    if (-not (Get-Module -Name PSDepend -ListAvailable)) {
-        Install-Module -Name PSDepend -Repository PSGallery
+    try {
+        if (-not (Get-Module -Name PSDepend -ListAvailable)) {
+            Install-Module -Name PSDepend -Repository PSGallery -Scope CurrentUser
+        }
+        Import-Module -Name PSDepend -Verbose:$false
+        Invoke-PSDepend -Path $RequirementsFile -Install -Import -Force -WarningAction SilentlyContinue
     }
-    Import-Module -Name PSDepend -Verbose:$false
-    Invoke-PSDepend -Path $RequirementsFile -Install -Import -Force -WarningAction SilentlyContinue
+    finally {
+        Set-PSRepository -Name PSGallery -InstallationPolicy $PreviousInstallationPolicy
+    }
 }
 #endregion Bootstrap dependencies
 
