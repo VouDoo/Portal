@@ -175,7 +175,7 @@ Task platyPS -depends Build {
         }
 
         # Create help out directory
-        if (-not (Test-Path -Path $Settings.Out)) {
+        if (-not (Test-Path -Path $Settings.DocsHelpOut)) {
             "[{0}][outdir] Create help out directory." -f $psake.context.currentTaskName
             New-Item -Path $Settings.DocsHelpOut -ItemType Directory -Force -Verbose:$VerbosePreference | Out-Null
         }
