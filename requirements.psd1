@@ -3,8 +3,12 @@
         Target     = "CurrentUser"
         Repository = "PSGallery"
     }
-    Pester           = "5.6.1"
-    psake            = "4.9.0"
+    psake            = "latest"
     PSScriptAnalyzer = "latest"
-    platyPS          = "0.14.2"
+    # SkipPublisherCheck: Windows ships an old Pester signed by Microsoft, which blocks updating it otherwise
+    Pester           = @{
+        Version    = "latest"
+        Parameters = @{ SkipPublisherCheck = $true }
+    }
+    platyPS          = "latest"
 }
