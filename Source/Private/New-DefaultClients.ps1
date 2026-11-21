@@ -28,6 +28,32 @@ function New-DefaultClients {
     process {
         $DefaultClient = @()
 
+        if (-not [System.OperatingSystem]::IsWindows()) {
+            # OpenSSH client from PATH
+            $DefaultClient += New-Object -TypeName Client -ArgumentList @(
+                "OpenSSH",
+                "ssh",
+                "-l <user> -p <port> <host>",
+                22,
+                [Scopes]::Console,
+                "OpenSSH client"
+            )
+
+            if ([System.OperatingSystem]::IsLinux()) {
+                # FreeRDP 3 for Remote Desktop
+                $DefaultClient += New-Object -TypeName Client -ArgumentList @(
+                    "FreeRDP",
+                    "xfreerdp3",
+                    "/v:<host>:<port> /u:<user> /f",
+                    3389,
+                    [Scopes]::External,
+                    "FreeRDP (Remote Desktop client)"
+                )
+            }
+
+            return $DefaultClient
+        }
+
         # OpenSSH (Microsoft Windows feature)
         $DefaultClient += New-Object -TypeName Client -ArgumentList @(
             "OpenSSH",

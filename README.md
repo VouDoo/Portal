@@ -34,6 +34,7 @@ To install the PowerShell module, follow one of these methods:
 - [Build from Source](#build-from-source)
 
 Please note that the module is only available for PowerShell Core (7.1 or later).
+It works on Windows, Linux and macOS.
 
 Get the latest version of PS Core from [the official PowerShell repository](https://github.com/PowerShell/PowerShell/releases).
 
@@ -51,7 +52,10 @@ Install-Module -Name Portal -Repository PSGallery
 ### Get released versions
 
 Download `Portal.zip` from [the "Releases" page](https://github.com/VouDoo/Portal/releases).
-Extract it to the `~\Documents\PowerShell\Modules\` directory.
+Extract it to your user modules directory:
+
+- Windows: `~\Documents\PowerShell\Modules\`
+- Linux and macOS: `~/.local/share/powershell/Modules/`
 
 ### Build from Source
 
@@ -70,13 +74,14 @@ Extract it to the `~\Documents\PowerShell\Modules\` directory.
 3. Remove any old versions of the module
 
     ```powershell
-    Remove-Item "$HOME\Documents\PowerShell\Modules\Portal" -Force
+    $ModulesDirectory = $env:PSModulePath.Split([System.IO.Path]::PathSeparator)[0]
+    Remove-Item (Join-Path $ModulesDirectory "Portal") -Recurse -Force -ErrorAction SilentlyContinue
     ```
 
 4. Install the freshly built module
 
     ```powershell
-    Copy-Item ".\Out\Portal" "$HOME\Documents\PowerShell\Modules\" -Recurse
+    Copy-Item (Join-Path "Out" "Portal") $ModulesDirectory -Recurse
     ```
 
 ---
@@ -123,12 +128,27 @@ Simply run:
 New-PortalInventory
 ```
 
-By default, the inventory file is created as `%APPDATA%\Portal\inventory.json`.
+By default, the inventory file is created in the usual settings directory of your OS:
+
+| OS      | Default path |
+|:-------:| :----------- |
+| Windows | `%APPDATA%\Portal\inventory.json` |
+| Linux   | `$XDG_CONFIG_HOME/portal/inventory.json` (or `~/.config/portal/inventory.json`) |
+| macOS   | `~/Library/Application Support/Portal/inventory.json` |
+
+The default clients also depend on your OS: OpenSSH, PuTTY and Remote Desktop on Windows, OpenSSH and FreeRDP on Linux, OpenSSH on macOS.
 
 To use a custom path, run:
 
 ```powershell
 Set-PortalInventory "C:\path\to\your\inventory.json"
+```
+
+The path is stored in the `PORTAL_INVENTORY` environment variable.
+On Linux and macOS, environment variables cannot be saved for your user, so add this line to your PowerShell profile instead:
+
+```powershell
+$env:PORTAL_INVENTORY = "/path/to/your/inventory.json"
 ```
 
 _The inventory uses the JSON format, do not forget the file extension._
@@ -162,7 +182,7 @@ The `-Scope` parameter defines in which scope a connection will be opened by def
 | Scope       | Description |
 |:-----------:| :---------- |
 | `Console`   | Open the connection process in the current console. **(Default)** |
-| `External`  | Open the connection process as an independant process (external window). |
+| `External`  | Open the connection process as an independent process (external window).</br>On Linux and macOS, terminal programs (like `ssh`) do not get their own window: use your terminal emulator as the executable instead (e.g. `-Executable kitty -Arguments "ssh -p <port> <host>"`). |
 | `Undefined` | Undefined scope.</br>A scope must be specified when the connection is opened. |
 
 ### Add a connection

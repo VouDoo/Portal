@@ -24,7 +24,27 @@ class Inventory {
             )
             if ($Value) { return $Value }
         }
-        return Join-Path -Path $env:APPDATA -ChildPath "Portal/inventory.json"
+        return Join-Path -Path ([Inventory]::GetDefaultDirectory()) -ChildPath "inventory.json"
+    }
+
+    static [string] GetDefaultDirectory() {
+        # Usual location for application settings on each OS
+        if ([System.OperatingSystem]::IsWindows()) {
+            # %APPDATA%\Portal
+            return Join-Path -Path ([System.Environment]::GetFolderPath("ApplicationData")) -ChildPath "Portal"
+        }
+        if ([System.OperatingSystem]::IsMacOS()) {
+            # ~/Library/Application Support/Portal
+            return Join-Path -Path $env:HOME -ChildPath "Library/Application Support/Portal"
+        }
+        # Linux and others: $XDG_CONFIG_HOME/portal, or ~/.config/portal
+        $ConfigHome = if ($env:XDG_CONFIG_HOME) {
+            $env:XDG_CONFIG_HOME
+        }
+        else {
+            Join-Path -Path $env:HOME -ChildPath ".config"
+        }
+        return Join-Path -Path $ConfigHome -ChildPath "portal"
     }
 
     [void] ReadFile() {
