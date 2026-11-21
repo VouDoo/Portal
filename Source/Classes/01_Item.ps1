@@ -6,13 +6,12 @@ class Item {
     # Description
     [string] $Description
 
-    [hashtable] Splat() {
-        $Hashtable = [ordered] @{}
+    [System.Collections.Specialized.OrderedDictionary] Splat() {
+        # Properties in declaration order (keeps the inventory file readable)
+        $Dictionary = [ordered] @{}
         foreach ($p in $this.PSObject.Properties) {
-            $this.PSObject.Properties | ForEach-Object -Process {
-                $Hashtable[$p.Name] = $p.Value
-            }
+            $Dictionary[$p.Name] = $p.Value
         }
-        return $Hashtable
+        return $Dictionary
     }
 }
