@@ -34,7 +34,6 @@ function Rename-Portal {
             HelpMessage = "Name of the connection to rename."
         )]
         [ArgumentCompleter([ConnectionNameCompleter])]
-        [ValidateConnectionName()]
         [string] $Name,
 
         [Parameter(
@@ -58,6 +57,13 @@ function Rename-Portal {
             Write-Error -Message (
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
+        }
+
+        try {
+            $Inventory.AssertConnectionExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message
         }
 
         if ($PSCmdlet.ShouldProcess(

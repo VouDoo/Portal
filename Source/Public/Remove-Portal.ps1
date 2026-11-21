@@ -34,7 +34,6 @@ function Remove-Portal {
             HelpMessage = "Name of the connection."
         )]
         [ArgumentCompleter([ConnectionNameCompleter])]
-        [ValidateConnectionName()]
         [string] $Name
     )
 
@@ -50,6 +49,13 @@ function Remove-Portal {
             Write-Error -Message (
                 "Cannot open inventory: {0}" -f $_.Exception.Message
             )
+        }
+
+        try {
+            $Inventory.AssertConnectionExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message
         }
 
         if ($PSCmdlet.ShouldProcess(

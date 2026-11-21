@@ -224,6 +224,18 @@ class Inventory {
         return $this.GetConnection($Name).Count -gt 0
     }
 
+    [void] AssertClientExists([string] $Name) {
+        if (-not $this.ClientExists($Name)) {
+            throw "Client `"{0}`" does not exist." -f $Name
+        }
+    }
+
+    [void] AssertConnectionExists([string] $Name) {
+        if (-not $this.ConnectionExists($Name)) {
+            throw "Connection `"{0}`" does not exist." -f $Name
+        }
+    }
+
     [void] AddClient([Client] $Client) {
         if ($this.ClientExists($Client.Name)) {
             throw "Cannot add Client `"{0}`" as it already exists." -f $Client.Name

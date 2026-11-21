@@ -36,13 +36,19 @@ function Test-Portal {
             HelpMessage = "Name of the connection."
         )]
         [ArgumentCompleter([ConnectionNameCompleter])]
-        [ValidateConnectionName()]
         [string] $Name
     )
 
     process {
         $Inventory = Import-Inventory
         $Status = "Unknown"
+
+        try {
+            $Inventory.AssertConnectionExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message -ErrorAction Stop
+        }
 
         $Connection = $Inventory.GetConnection($Name)
 

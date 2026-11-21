@@ -43,14 +43,12 @@ function Open-Portal {
             HelpMessage = "Name of the connection."
         )]
         [ArgumentCompleter([ConnectionNameCompleter])]
-        [ValidateConnectionName()]
         [string] $Name,
 
         [Parameter(
             HelpMessage = "Name of the client to use to initiate the connection."
         )]
         [ArgumentCompleter([ClientNameCompleter])]
-        [ValidateClientName()]
         [Alias("c")]
         [string] $Client,
 
@@ -79,6 +77,13 @@ function Open-Portal {
             Write-Error -Message (
                 "Error import inventory: {0}" -f $_.Exception.Message
             )
+        }
+
+        try {
+            $Inventory.AssertConnectionExists($Name)
+        }
+        catch {
+            Write-Error -Message $_.Exception.Message
         }
 
         $Invocation = @{}
