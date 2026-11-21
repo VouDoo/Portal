@@ -184,3 +184,24 @@ Describe "Remove-Portal" {
         { Remove-Portal -Name "TestConnection0" } | Should -Throw
     }
 }
+Describe "Remove-PortalClient used by connections" {
+    BeforeAll {
+        Add-PortalClient -Name "UsedClient" -Executable "client.exe" -Arguments "-p <port> <host>" -DefaultPort 1234
+        Add-Portal -Name "UsingConnection1" -Hostname "using1.test" -DefaultClient "UsedClient"
+        Add-Portal -Name "UsingConnection2" -Hostname "using2.test" -DefaultClient "UsedClient"
+    }
+    It "Removes a client used by connections, and fails" {
+        { Remove-PortalClient -Name "UsedClient" }
+        | Should -Throw -ExpectedMessage "*default client of these connections: UsingConnection1, UsingConnection2*"
+        (Get-PortalClient -Name "UsedClient").Name | Should -BeExactly "UsedClient"
+    }
+    It "Forces the removal of a client used by connections, with a warning" {
+        Remove-PortalClient -Name "UsedClient" -Force -WarningVariable Warnings -WarningAction SilentlyContinue
+        $Warnings | Should -HaveCount 1
+        $Warnings[0].Message | Should -BeLike "*UsingConnection1, UsingConnection2*"
+        Get-PortalClient -Name "UsedClient" | Should -BeNullOrEmpty
+    }
+    It "Keeps the connections of the removed client" {
+        (Get-Portal -Client "UsedClient").Name | Should -Be @("UsingConnection1", "UsingConnection2")
+    }
+}

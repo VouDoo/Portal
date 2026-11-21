@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Default clients match the OS: OpenSSH (`ssh` from PATH) on Linux and macOS, and FreeRDP (`xfreerdp3`) on Linux
   - `Set-PortalInventory -Target User` sets the path for the current session and explains how to persist it in the PowerShell profile, as user environment variables cannot be persisted outside Windows
 - Quotes in the `Arguments` of a client group several words into one argument
+- `Force` parameter in `Remove-PortalClient` to remove a client even if it is the default client of some connections
 
 ### Changed
 
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Open-Portal` allowed command injection through values such as the user (Console scope)
 - `Open-Portal` failed with executable paths containing spaces (Console scope)
 - `Open-Portal` split arguments containing spaces, such as the user (External scope)
+- `Remove-PortalClient` left connections without their default client: it now refuses to remove a client used by connections, unless `-Force` is used
 
 ## [0.4.1]
 

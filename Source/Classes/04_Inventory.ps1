@@ -187,6 +187,10 @@ class Inventory {
         return $this.Connections | Where-Object -Property Name -EQ $Name
     }
 
+    [Connection[]] GetConnectionsUsingClient([string] $Name) {
+        return $this.Connections | Where-Object -Property DefaultClient -EQ $Name
+    }
+
     [bool] ClientExists([string] $Name) {
         return $this.GetClient($Name).Count -gt 0
     }
