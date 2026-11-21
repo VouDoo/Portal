@@ -41,6 +41,7 @@ if ($PSCmdlet.ParameterSetName -eq "Help") {
 }
 else {
     Invoke-psake -buildFile $psakeFile -taskList $Task -nologo
-    #exit ( [int]( -not $psake.build_success ) )
+    # Non-zero exit code when the build fails (for CI and VS Code tasks)
+    exit ([int](-not $psake.build_success))
 }
 #endregion Execute psake task(s)
